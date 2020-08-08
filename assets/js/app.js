@@ -1,12 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { HashRouter, Route, Switch, withRouter } from "react-router-dom";
 
+import { ThemeProvider } from '@material-ui/core';
+import { theme } from './styles/theme'
+
+import Navbar from './components/ui/Navbar';
+import Homepage from './pages/Homepage';
 import '../css/app.css';
 
-console.log('Hello Webpack Encore! Edit me in assets/js/app.js')
-
 const App = () => {
-    return <h1>Hello world !</h1>
+    const NavbarWithRouter = withRouter(Navbar);
+
+    return (
+        <ThemeProvider theme={theme}>
+            <HashRouter>
+                <NavbarWithRouter />
+                <Switch>
+                    <Route path="/" component={ Homepage } />
+                </Switch>  
+            </ HashRouter>
+        </ThemeProvider>
+    )
 }
 
 

@@ -68,7 +68,7 @@ class Order
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isFree;
+    private $isFree = 1;
 
     /**
      * @ORM\ManyToOne(targetEntity=Appointment::class, inversedBy="orders")
@@ -86,6 +86,11 @@ class Order
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $supplier;
 
     public function getId(): ?int
     {
@@ -232,6 +237,18 @@ class Order
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getSupplier(): ?string
+    {
+        return $this->supplier;
+    }
+
+    public function setSupplier(string $supplier): self
+    {
+        $this->supplier = $supplier;
 
         return $this;
     }

@@ -3,6 +3,8 @@ import PageWrap from '../components/ui/PageWrap';
 import { Container } from '@material-ui/core';
 
 const Homepage = (props) => {
+    
+
     return <PageWrap
     //loading={loading}
     title="Homepage"
@@ -13,7 +15,7 @@ const Homepage = (props) => {
         setToast(false)}}*/
     >  
         <Container fixed>
-            <p>hello</p>
+            <p>rien à afficher</p>
         </Container> 
     </PageWrap> 
 }

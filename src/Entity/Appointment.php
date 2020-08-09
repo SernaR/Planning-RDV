@@ -13,7 +13,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 /**
  * @ORM\Entity(repositoryClass=AppointmentRepository::class)
  * @ApiResource(
- *     collectionOperations={"get"},
+ *     collectionOperations={"get", "post"},
  *     itemOperations={"get"}
  * )
  */
@@ -32,6 +32,7 @@ class Appointment
     private $number;
 
     /**
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="date")
      */
     private $callDate;
@@ -44,7 +45,7 @@ class Appointment
     /**
      * @ORM\Column(type="integer")
      */
-    private $status;
+    private $status = 0;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -52,7 +53,7 @@ class Appointment
     private $schedule;
 
     /**
-     * @ORM\OneToOne(targetEntity=Location::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Location::class, cascade={"persist"})
      */
     private $location;
 

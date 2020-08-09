@@ -22,7 +22,7 @@ export default function Navbar() {
       <Toolbar className={classes.toolbar}>
           <NavLink to="/" className={classes.menuButton}><Typography variant="h5" color="inherit" >Kip Creativ' </Typography></NavLink>  
         <div >
-          <Button color="inherit"><NavLink to="/creation/nouveau" className={classes.menuButton}>Nouveau</NavLink></Button>
+          <Button color="inherit"><NavLink to="/rendez-vous/nouveau" className={classes.menuButton}>Nouveau</NavLink></Button>
           <Button color="inherit"><NavLink to="/planning/consultation" className={classes.menuButton}>Planning</NavLink></Button>
           <Button color="inherit"><NavLink to="/liste/consultation" className={classes.menuButton}>Liste</NavLink></Button>
         </div>  

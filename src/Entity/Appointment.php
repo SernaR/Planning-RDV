@@ -29,7 +29,7 @@ class Appointment
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $number;
+    private $number = 'test';
 
     /**
      * @Gedmo\Timestampable(on="create")

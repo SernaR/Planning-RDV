@@ -1,8 +1,12 @@
 export const API_URL = 'https://localhost:8000/api/'
 
-export const BOOKING_API = API_URL + 'orders' //pas utilisé
+export const BOOKING_API = API_URL + 'orders'
 
-export const itemsPerPage = 15
+//export const itemsPerPage = 15
+
+export const AGENDA_START = 32
+export const AGENDA_END = 68
+
 
 /*{
     "quarters" : [

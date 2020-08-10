@@ -19,7 +19,7 @@ function Picker({ label, minDate, maxDate, onChange, name, value=null, error }) 
             //variant="static"
             label={label}
             value={value}
-            onChange={date => onChange(name, date)}
+            onChange={date => onChange(name, date, true)}
             error={error}
             minDate={moment().add(1, 'd')}
             maxDate={moment().add(15, 'd')}

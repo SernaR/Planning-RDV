@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import moment from 'moment'
+
 import PageWrap from '../components/ui/PageWrap';
 import BookingTable from '../components/booking/Table'
 import Picker from '../components/form/DatePicker'
 
 import Api from '../services/api'
 import { BOOKING_API } from '../services/config'
-import { Container, Grid, Paper } from '@material-ui/core';
+import { Container, Grid, Paper, Button } from '@material-ui/core';
+import Agenda from '../components/Agenda';
 
 const AppointmentPage = (props) => {
     const [toast, setToast] = useState(false) 
+
+    const [selectedDate, setSelectedDate] = useState(null)
     const [bookings, setBookings] = useState([])
     const [orders, setOrders] = useState([])
     const [appointment, setAppointment] = useState({})
@@ -26,8 +31,9 @@ const AppointmentPage = (props) => {
         }
     }
 
-    const handleChangeDate = (name, date) => {
+    const handleChangeDate = (name, date, isSelected) => {
         setAppointment({ ...appointment, [name]: date })
+        if (isSelected) setSelectedDate(date)  //et fonction appel à l'api//////////////////////
     }
 
     const addBooking = (id) => {
@@ -35,6 +41,20 @@ const AppointmentPage = (props) => {
         const ordersids = isNew ? [ ...orders, id ] : orders.filter( orderId => orderId !== id)
         
         setOrders(ordersids)
+    }
+
+    const nextDay = () => {
+        setSelectedDate(moment(selectedDate).add(1, 'days'))
+      }
+    
+      const previousDay = () => {
+        setSelectedDate(moment(selectedDate).subtract(1, 'days'))
+      }
+
+    const handleSubmit = () => {
+        const newAppointment = { ...appointment, orders }
+        setAppointment(newAppointment)
+        console.log('newAppointment:', newAppointment)
     }
 
     return (
@@ -52,11 +72,19 @@ const AppointmentPage = (props) => {
                     items={bookings}
                     selected={orders}
                     onClick={addBooking}/>
-                <Picker 
-                    label="Date demandée" 
-                    onChange={handleChangeDate} 
-                    name="askedDate" 
-                    value={appointment.askedDate}/>
+                <Button onClick={previousDay}>Jour précédent</Button> 
+                <Button onClick={nextDay}>Jour suivant</Button> 
+                <form onSubmit={handleSubmit}>
+                    <Picker 
+                        label="Date demandée" 
+                        onChange={handleChangeDate} 
+                        name="askedDate" 
+                        value={appointment.askedDate}/>
+                    <Agenda 
+                        date={ selectedDate } 
+                        onClick={handleChangeDate}/>
+                    <Button type="submit">Envoyer</Button>    
+                </form>    
             </Container>
             <Grid container spacing={3}>
                 <Grid item xs>
@@ -73,6 +101,7 @@ const AppointmentPage = (props) => {
                 <Grid item xs>    
                     <Paper >
                         <div><pre>{JSON.stringify(appointment, null, 2)}</pre></div>
+                        <div><pre>{JSON.stringify(selectedDate, null, 2)}</pre></div>
                     </Paper>
                 </Grid>
             </Grid>

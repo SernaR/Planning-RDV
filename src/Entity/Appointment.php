@@ -57,10 +57,7 @@ class Appointment
      */
     private $location;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Order::class, mappedBy="appointment")
-     */
-    private $orders;
+    
 
     /**
      * @ORM\ManyToOne(targetEntity=Planning::class, inversedBy="appointments")
@@ -79,10 +76,17 @@ class Appointment
      */
     private $updatedAt;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Order::class, inversedBy="appointments")
+     */
+    private $orders;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
     }
+
+    
 
     public function getId(): ?int
     {
@@ -161,37 +165,6 @@ class Appointment
         return $this;
     }
 
-    /**
-     * @return Collection|Order[]
-     */
-    public function getOrders(): Collection
-    {
-        return $this->orders;
-    }
-
-    public function addOrder(Order $order): self
-    {
-        if (!$this->orders->contains($order)) {
-            $this->orders[] = $order;
-            $order->setAppointment($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOrder(Order $order): self
-    {
-        if ($this->orders->contains($order)) {
-            $this->orders->removeElement($order);
-            // set the owning side to null (unless already changed)
-            if ($order->getAppointment() === $this) {
-                $order->setAppointment(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getPlanning(): ?Planning
     {
         return $this->planning;
@@ -224,6 +197,32 @@ class Appointment
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Order[]
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): self
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders[] = $order;
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): self
+    {
+        if ($this->orders->contains($order)) {
+            $this->orders->removeElement($order);
+        }
 
         return $this;
     }

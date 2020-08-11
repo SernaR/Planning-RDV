@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -71,11 +73,6 @@ class Order
     private $isFree = 1;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Appointment::class, inversedBy="orders")
-     */
-    private $appointment;
-
-    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
@@ -91,6 +88,16 @@ class Order
      * @ORM\Column(type="string", length=255)
      */
     private $supplier;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Appointment::class, mappedBy="orders")
+     */
+    private $appointments;
+
+    public function __construct()
+    {
+        $this->appointments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -205,18 +212,6 @@ class Order
         return $this;
     }
 
-    public function getAppointment(): ?Appointment
-    {
-        return $this->appointment;
-    }
-
-    public function setAppointment(?Appointment $appointment): self
-    {
-        $this->appointment = $appointment;
-
-        return $this;
-    }
-
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
@@ -249,6 +244,34 @@ class Order
     public function setSupplier(string $supplier): self
     {
         $this->supplier = $supplier;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Appointment[]
+     */
+    public function getAppointments(): Collection
+    {
+        return $this->appointments;
+    }
+
+    public function addAppointment(Appointment $appointment): self
+    {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments[] = $appointment;
+            $appointment->addOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppointment(Appointment $appointment): self
+    {
+        if ($this->appointments->contains($appointment)) {
+            $this->appointments->removeElement($appointment);
+            $appointment->removeOrder($this);
+        }
 
         return $this;
     }

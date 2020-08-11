@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=AppointmentRepository::class)
@@ -49,6 +50,7 @@ class Appointment
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"planning_read"})
      */
     private $schedule;
 
@@ -56,8 +58,6 @@ class Appointment
      * @ORM\OneToOne(targetEntity=Location::class, cascade={"persist"})
      */
     private $location;
-
-    
 
     /**
      * @ORM\ManyToOne(targetEntity=Planning::class, inversedBy="appointments")

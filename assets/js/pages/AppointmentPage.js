@@ -6,7 +6,7 @@ import BookingTable from '../components/booking/Table'
 import Picker from '../components/form/DatePicker'
 
 import Api from '../services/api'
-import { BOOKING_API } from '../services/config'
+import { BOOKING_API, PLANNING_API } from '../services/config'
 import { Container, Grid, Paper, Button } from '@material-ui/core';
 import Agenda from '../components/Agenda';
 
@@ -17,6 +17,7 @@ const AppointmentPage = (props) => {
     const [bookings, setBookings] = useState([])
     const [orders, setOrders] = useState([])
     const [appointment, setAppointment] = useState({})
+    const [ planning, setPlanning ] = useState({})
     
     useEffect(() => {
         fetchBooking()
@@ -36,7 +37,7 @@ const AppointmentPage = (props) => {
         if (isSelected) setSelectedDate(date)  //et fonction appel à l'api//////////////////////
     }
 
-    const addBooking = (id) => {
+    const toggleBooking = (id) => {
         const isNew = orders.indexOf(id) === -1
         const ordersids = isNew ? [ ...orders, id ] : orders.filter( orderId => orderId !== id)
         
@@ -45,11 +46,24 @@ const AppointmentPage = (props) => {
 
     const nextDay = () => {
         setSelectedDate(moment(selectedDate).add(1, 'days'))
-      }
-    
-      const previousDay = () => {
+        getPlanning()/////////////////test////////////////////////////////////
+    }
+
+    const previousDay = () => {
         setSelectedDate(moment(selectedDate).subtract(1, 'days'))
-      }
+    }
+
+    const getPlanning = async () => {
+        try{
+            const planning = await Api.create(PLANNING_API, planningReference())
+            setPlanning(planning)
+        }catch(err) {
+            setToast(true)
+        }
+    }
+    const planningReference = () => { 
+        return { reference: selectedDate.format('YYYY') + '-' + selectedDate.dayOfYear() }
+    }
 
     const handleSubmit = () => {
         const newAppointment = { ...appointment, orders }
@@ -71,7 +85,7 @@ const AppointmentPage = (props) => {
                  <BookingTable 
                     items={bookings}
                     selected={orders}
-                    onClick={addBooking}/>
+                    onClick={toggleBooking}/>
                 <Button onClick={previousDay}>Jour précédent</Button> 
                 <Button onClick={nextDay}>Jour suivant</Button> 
                 <form onSubmit={handleSubmit}>
@@ -102,6 +116,7 @@ const AppointmentPage = (props) => {
                     <Paper >
                         <div><pre>{JSON.stringify(appointment, null, 2)}</pre></div>
                         <div><pre>{JSON.stringify(selectedDate, null, 2)}</pre></div>
+                        <div><pre>{JSON.stringify(planning, null, 2)}</pre></div>
                     </Paper>
                 </Grid>
             </Grid>

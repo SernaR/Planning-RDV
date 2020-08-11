@@ -21,6 +21,7 @@ function find(url, id) {
 function create(url, data) {
   return axios
     .post(url, data)
+    .then(response => response.data);
 }
 
 function update(url, id, data) {

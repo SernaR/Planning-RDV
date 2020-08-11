@@ -1,13 +1,14 @@
 export const API_URL = 'https://localhost:8000/api/'
 
 export const BOOKING_API = API_URL + 'orders'
+export const PLANNING_API = API_URL + 'plannings'
 
 //export const itemsPerPage = 15
 
 export const AGENDA_START = 32
 export const AGENDA_END = 68
 
-
+//ref planning = dateReference.format('YYYY') + '-' + dateReference.dayOfYear()
 /*{
     "quarters" : [
         "08:00","08:15","08:30","08:45",

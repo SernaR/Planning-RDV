@@ -8,11 +8,17 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PlanningRepository::class)
  * @ApiResource(
- *     collectionOperations={"get", "post"},
+ *     collectionOperations={
+ *          "post":{
+ *             "controller"=App\Controller\api\FindOrCreatePlanningController::class,
+ *             "normalization_context"={"groups"={"planning_read"}}     
+ *          }
+ *      },
  *     itemOperations={"get"}
  * )
  */
@@ -22,21 +28,25 @@ class Planning
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"planning_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"planning_read"})
      */
     private $reference;
 
     /**
      * @ORM\OneToMany(targetEntity=Appointment::class, mappedBy="planning")
+     * @Groups({"planning_read"})
      */
-    private $appointments;
+    private $appointments = [];
 
-    public function __construct()
+    public function __construct($reference)
     {
+        $this->reference = $reference;
         $this->appointments = new ArrayCollection();
     }
 

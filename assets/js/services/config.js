@@ -2,6 +2,7 @@ export const API_URL = 'https://localhost:8000/api/'
 
 export const BOOKING_API = API_URL + 'orders'
 export const PLANNING_API = API_URL + 'plannings'
+export const APPOINTMENT_API = API_URL + 'appointments'
 
 //export const itemsPerPage = 15
 

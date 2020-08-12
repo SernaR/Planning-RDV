@@ -3,23 +3,37 @@ import moment from 'moment'
 import { Button } from '@material-ui/core';
 import { AGENDA_START, AGENDA_END } from '../services/config'
 
-
-const Agenda = ({ date, onClick }) => {
+const Agenda = ({ date, appointments = [], onClick }) => {
     const agenda = []
-    let forbiddenPositions = []
-    let now
+    const forbiddenPositions = appointments.map( ({schedule}) => moment(schedule).format('HH:mm') )  
     
     if( date) {
-        now = moment(moment(date).startOf('day').toDate());
+        const now = moment(moment(date).startOf('day').toDate());
 
         for (let i = AGENDA_START; i < AGENDA_END; i++) {
-            agenda.push(now.clone().add((i * 15), 'm'))
+            const date = now.clone().add((i * 15), 'm')
+            const time = date.format('HH:mm')
+            const isForbidden = forbiddenPositions.includes(time)
+           
+            agenda.push({
+                text: isForbidden ? "occuppé" : time,
+                isForbidden,
+                date
+            })
         }
     }
 
     return ( 
         <ul>
-            {agenda.map( (quarter, index) =><li key={index}><Button onClick={() => onClick("schedule", quarter, false)}>{index} - {quarter.format('HH:mm')}</Button></li>)}
+            {agenda.map( (quarter, index) => (
+                <li key={index}>
+                    <Button
+                        disabled={quarter.isForbidden} 
+                        onClick={() => onClick("schedule", quarter.date, false)}
+                        >{ quarter.text }
+                    </Button>
+                </li>
+            ))}
         </ul> 
      );
 }

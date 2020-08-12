@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment'
 
 import PageWrap from '../components/ui/PageWrap';
@@ -6,7 +6,7 @@ import BookingTable from '../components/booking/Table'
 import Picker from '../components/form/DatePicker'
 
 import Api from '../services/api'
-import { BOOKING_API, PLANNING_API } from '../services/config'
+import { BOOKING_API, APPOINTMENT_API } from '../services/config'
 import { Container, Grid, Paper, Button } from '@material-ui/core';
 import Agenda from '../components/Agenda';
 import useFetchPlanning from '../hooks/useFetchPlanning';
@@ -52,10 +52,22 @@ const AppointmentPage = (props) => {
         getPlanning(moment(selectedDate).subtract(1, 'days'))
     }
 
-    const handleSubmit = () => {
-        const newAppointment = { ...appointment, orders }
-        setAppointment(newAppointment)
+    const handleSubmit = async() => {
+        //faire les vérifications
+        const newAppointment = { ...appointment, 
+            planning: planning['@id'],
+            orders,
+            number: "string"
+        }
         console.log('newAppointment:', newAppointment)
+       
+        try {
+            const result = await Api.create(APPOINTMENT_API, newAppointment)
+            console.log('appointment:', result)
+            //vider les states   
+        }catch(err) {
+            setToast(true)
+        }
     }
 
     return (
@@ -82,6 +94,7 @@ const AppointmentPage = (props) => {
                         name="askedDate" 
                         value={appointment.askedDate}/>
                     <Agenda 
+                        appointments={planning.appointments}
                         date={ selectedDate } 
                         onClick={handleChangeDate}/>
                     <Button type="submit">Envoyer</Button>    

@@ -9,15 +9,15 @@ import Api from '../services/api'
 import { BOOKING_API, PLANNING_API } from '../services/config'
 import { Container, Grid, Paper, Button } from '@material-ui/core';
 import Agenda from '../components/Agenda';
+import useFetchPlanning from '../hooks/useFetchPlanning';
 
 const AppointmentPage = (props) => {
     const [toast, setToast] = useState(false) 
 
-    const [selectedDate, setSelectedDate] = useState(null)
+    const [selectedDate, planning, getPlanning] = useFetchPlanning()
     const [bookings, setBookings] = useState([])
     const [orders, setOrders] = useState([])
     const [appointment, setAppointment] = useState({})
-    const [ planning, setPlanning ] = useState({})
     
     useEffect(() => {
         fetchBooking()
@@ -34,7 +34,7 @@ const AppointmentPage = (props) => {
 
     const handleChangeDate = (name, date, isSelected) => {
         setAppointment({ ...appointment, [name]: date })
-        if (isSelected) setSelectedDate(date)  //et fonction appel à l'api//////////////////////
+        if (isSelected) getPlanning(date)
     }
 
     const toggleBooking = (id) => {
@@ -45,24 +45,11 @@ const AppointmentPage = (props) => {
     }
 
     const nextDay = () => {
-        setSelectedDate(moment(selectedDate).add(1, 'days'))
-        getPlanning()/////////////////test////////////////////////////////////
+        getPlanning(moment(selectedDate).add(1, 'days'))
     }
 
     const previousDay = () => {
-        setSelectedDate(moment(selectedDate).subtract(1, 'days'))
-    }
-
-    const getPlanning = async () => {
-        try{
-            const planning = await Api.create(PLANNING_API, planningReference())
-            setPlanning(planning)
-        }catch(err) {
-            setToast(true)
-        }
-    }
-    const planningReference = () => { 
-        return { reference: selectedDate.format('YYYY') + '-' + selectedDate.dayOfYear() }
+        getPlanning(moment(selectedDate).subtract(1, 'days'))
     }
 
     const handleSubmit = () => {
@@ -119,8 +106,7 @@ const AppointmentPage = (props) => {
                         <div><pre>{JSON.stringify(planning, null, 2)}</pre></div>
                     </Paper>
                 </Grid>
-            </Grid>
-                
+            </Grid>   
         </PageWrap>
     )     
      

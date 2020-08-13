@@ -55,11 +55,6 @@ class Appointment
     private $schedule;
 
     /**
-     * @ORM\OneToOne(targetEntity=Location::class, cascade={"persist"})
-     */
-    private $location;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Planning::class, inversedBy="appointments")
      */
     private $planning;
@@ -80,6 +75,18 @@ class Appointment
      * @ORM\ManyToMany(targetEntity=Order::class, inversedBy="appointments")
      */
     private $orders;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"planning_read"})
+     */
+    private $duration = 3;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"planning_read"})
+     */
+    private $door = "PA1";
 
     public function __construct()
     {
@@ -153,18 +160,6 @@ class Appointment
         return $this;
     }
 
-    public function getLocation(): ?Location
-    {
-        return $this->location;
-    }
-
-    public function setLocation(?Location $location): self
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
     public function getPlanning(): ?Planning
     {
         return $this->planning;
@@ -223,6 +218,30 @@ class Appointment
         if ($this->orders->contains($order)) {
             $this->orders->removeElement($order);
         }
+
+        return $this;
+    }
+
+    public function getDuration(): ?int
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(int $duration): self
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    public function getDoor(): ?string
+    {
+        return $this->door;
+    }
+
+    public function setDoor(string $door): self
+    {
+        $this->door = $door;
 
         return $this;
     }

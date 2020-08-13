@@ -6,17 +6,20 @@ import BookingTable from '../components/booking/Table'
 import Picker from '../components/form/DatePicker'
 
 import Api from '../services/api'
-import { BOOKING_API, APPOINTMENT_API } from '../services/config'
+import { BOOKING_API, APPOINTMENT_API, UNLOADING_TIME } from '../services/config'
 import { Container, Grid, Paper, Button } from '@material-ui/core';
 import Agenda from '../components/Agenda';
 import useFetchPlanning from '../hooks/useFetchPlanning';
+import useToggleBooking from '../hooks/useToggleBooking';
 
-const AppointmentPage = (props) => {
+
+const AppointmentPage = () => {
     const [toast, setToast] = useState(false) 
 
     const [selectedDate, planning, getPlanning] = useFetchPlanning()
+    const [duration, orders, toggleBooking] = useToggleBooking()
+    
     const [bookings, setBookings] = useState([])
-    const [orders, setOrders] = useState([])
     const [appointment, setAppointment] = useState({})
     
     useEffect(() => {
@@ -37,13 +40,6 @@ const AppointmentPage = (props) => {
         if (isSelected) getPlanning(date)
     }
 
-    const toggleBooking = (id) => {
-        const isNew = orders.indexOf(id) === -1
-        const ordersids = isNew ? [ ...orders, id ] : orders.filter( orderId => orderId !== id)
-        
-        setOrders(ordersids)
-    }
-
     const nextDay = () => {
         getPlanning(moment(selectedDate).add(1, 'days'))
     }
@@ -59,7 +55,6 @@ const AppointmentPage = (props) => {
             orders,
             number: "string"
         }
-        console.log('newAppointment:', newAppointment)
        
         try {
             const result = await Api.create(APPOINTMENT_API, newAppointment)
@@ -94,6 +89,8 @@ const AppointmentPage = (props) => {
                         name="askedDate" 
                         value={appointment.askedDate}/>
                     <Agenda 
+                        //appointment={appointment}
+                        door="PA1"
                         appointments={planning.appointments}
                         date={ selectedDate } 
                         onClick={handleChangeDate}/>

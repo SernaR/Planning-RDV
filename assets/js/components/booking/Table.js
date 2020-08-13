@@ -28,7 +28,7 @@ const BookingTable = ({items, selected, onClick}) => {
                             {items.map( (item) => 
                                 <TableRow
                                     hover
-                                    onClick={ () => onClick(item['@id']) }
+                                    onClick={ () => onClick(item['@id'], item.quantity, item.warehouse) }
                                     key={item.id}
                                 >
                                     <TableCell>
@@ -48,20 +48,3 @@ const BookingTable = ({items, selected, onClick}) => {
 }
  
 export default BookingTable;
-
-/*
-{items.map( (item, index) => {
-                                <TableRow
-                                    hover
-                                    key={item.id}
-                                >
-                                    <TableCell>
-                                        <Checkbox/>
-                                    </TableCell>
-                                    <TableCell >{item.number}</TableCell>
-                                    <TableCell >{item.quantity}</TableCell>
-                                    <TableCell >{item.warehouse}</TableCell>
-                                    <TableCell >plop</TableCell>
-                                </TableRow>
-                            })}
-                            */

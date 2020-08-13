@@ -3,9 +3,19 @@ import moment from 'moment'
 import { Button } from '@material-ui/core';
 import { AGENDA_START, AGENDA_END } from '../services/config'
 
-const Agenda = ({ date, appointments = [], onClick }) => {
+const setForbiddenPositions = (appointments) => {
+    const forbiddenPositions = []
+    appointments.map( ({schedule, duration}) => {
+        for (let i = 0; i < duration; i++) {
+            forbiddenPositions.push(moment(schedule).add((i * 15), 'm').format('HH:mm'))
+        }
+    }) 
+    return forbiddenPositions
+}
+
+const Agenda = ({ date, appointments = [], onClick, door, appointment }) => { //comment passer duration, door et schedule ??
     const agenda = []
-    const forbiddenPositions = appointments.map( ({schedule}) => moment(schedule).format('HH:mm') )  
+    const forbiddenPositions = setForbiddenPositions(appointments)
     
     if( date) {
         const now = moment(moment(date).startOf('day').toDate());
@@ -16,7 +26,7 @@ const Agenda = ({ date, appointments = [], onClick }) => {
             const isForbidden = forbiddenPositions.includes(time)
            
             agenda.push({
-                text: isForbidden ? "occuppé" : time,
+                text: isForbidden ? "occuppé" : time, // ou  positionné
                 isForbidden,
                 date
             })

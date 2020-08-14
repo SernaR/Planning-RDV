@@ -6,12 +6,13 @@ import BookingTable from '../components/booking/Table'
 import Picker from '../components/form/DatePicker'
 
 import Api from '../services/api'
-import { BOOKING_API, APPOINTMENT_API, UNLOADING_TIME } from '../services/config'
+import { BOOKING_API, APPOINTMENT_API } from '../services/config'
 import { Container, Grid, Paper, Button } from '@material-ui/core';
 import Agenda from '../components/Agenda';
 import useFetchPlanning from '../hooks/useFetchPlanning';
 import useToggleBooking from '../hooks/useToggleBooking';
 
+//faire sauter le RDV si modif qté
 
 const AppointmentPage = () => {
     const [toast, setToast] = useState(false) 
@@ -35,8 +36,16 @@ const AppointmentPage = () => {
         }
     }
 
-    const handleChangeDate = (name, date, isSelected) => {
-        setAppointment({ ...appointment, [name]: date })
+    const scheduleCheck = (door) => {
+        if( selectedDate && appointment.schedule ) {
+            if( door === appointment.door && moment(selectedDate).format('D-M') === moment(appointment.schedule).format('D-M')) {
+                return appointment.schedule
+            }
+        } 
+    } 
+
+    const handleChangeDate = (name, date, isSelected, door) => { 
+        setAppointment({ ...appointment, [name]: date, door })
         if (isSelected) getPlanning(date)
     }
 
@@ -52,6 +61,7 @@ const AppointmentPage = () => {
         //faire les vérifications
         const newAppointment = { ...appointment, 
             planning: planning['@id'],
+            duration,
             orders,
             number: "string"
         }
@@ -89,7 +99,9 @@ const AppointmentPage = () => {
                         name="askedDate" 
                         value={appointment.askedDate}/>
                     <Agenda 
-                        //appointment={appointment}
+                        schedule={scheduleCheck("PA1")}
+                        duration={duration}
+                        //schedule={appointment.schedule}
                         door="PA1"
                         appointments={planning.appointments}
                         date={ selectedDate } 

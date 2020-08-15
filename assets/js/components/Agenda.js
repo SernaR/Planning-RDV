@@ -16,19 +16,20 @@ const setForbiddenPositions = (appointments) => {
 
 const setSelection = (schedule, duration) => {
     if(!schedule) return []
-    const selection = []
-    for (let i = 0; i < duration; i++) {
-        selection.push(moment(schedule).add((i * 15), 'm').format('HH:mm'))
-    }
-    return selection 
+    return expand (schedule, duration)
 }
 
 const isPlaceEnough = (date, duration, forbiddenPositions) => {
-    const selection = []
-    for (let i = 0; i < duration; i++) {
-        selection.push(moment(date).add((i * 15), 'm').format('HH:mm'))
-    }
+    const selection = expand (date, duration)
     return !selection.some( date => forbiddenPositions.includes(date))
+}
+
+const expand = (schedule, duration) => {
+    const expanded = []
+    for (let i = 0; i < duration; i++) {
+        expanded.push(moment(schedule).add((i * 15), 'm').format('HH:mm'))
+    }
+    return expanded 
 }
 
 const Agenda = ({ date, appointments = [], onClick, door, schedule, duration }) => { 
@@ -44,7 +45,7 @@ const Agenda = ({ date, appointments = [], onClick, door, schedule, duration }) 
         }
     }
 
-    if( date) {
+    if(date) {
         const now = moment(moment(date).startOf('day').toDate());
 
         for (let i = AGENDA_START; i < AGENDA_END; i++) {

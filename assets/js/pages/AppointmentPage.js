@@ -11,6 +11,7 @@ import { Container, Grid, Paper, Button } from '@material-ui/core';
 import Agenda from '../components/Agenda';
 import useFetchPlanning from '../hooks/useFetchPlanning';
 import useToggleBooking from '../hooks/useToggleBooking';
+import Filter from '../components/booking/Filter';
 
 //faire sauter le RDV si modif qté
 
@@ -22,6 +23,10 @@ const AppointmentPage = () => {
     
     const [bookings, setBookings] = useState([])
     const [appointment, setAppointment] = useState({})
+    const [filters, setFilters] = useState({
+        supplier: '',
+        warehouse: 'PA'
+    })
     
     useEffect(() => {
         fetchBooking()
@@ -44,11 +49,21 @@ const AppointmentPage = () => {
         } 
     } 
 
+    const filteredBookings = bookings.filter (booking => {
+        return booking.supplier.toLowerCase().includes(filters.supplier.toLowerCase()) 
+            && booking.warehouse.toLowerCase().includes(filters.warehouse.toLowerCase())
+    })
+
     const handleChangeDate = (name, date, isSelected, door) => { 
         setAppointment({ ...appointment, [name]: date, door })
         if (isSelected) getPlanning(date)
     }
 
+    const handleFilter = ({target}) => {
+        setFilters({...filters, [target.name]:target.value})
+    }
+
+    // à mettre dans le hook
     const nextDay = () => {
         getPlanning(moment(selectedDate).add(1, 'days'))
     }
@@ -86,26 +101,25 @@ const AppointmentPage = () => {
                 setToast(false)}}
         >  
             <Container>
-                 <BookingTable 
-                    items={bookings}
-                    selected={orders}
-                    onClick={toggleBooking}/>
-                <Button onClick={previousDay}>Jour précédent</Button> 
-                <Button onClick={nextDay}>Jour suivant</Button> 
                 <form onSubmit={handleSubmit}>
-                    <Picker 
-                        label="Date demandée" 
-                        onChange={handleChangeDate} 
-                        name="askedDate" 
-                        value={appointment.askedDate}/>
+                    <Filter
+                        filters={filters} 
+                        onFilter={handleFilter}
+                        askedDate={appointment.askedDate} 
+                        onChangeDate={handleChangeDate}/>
+                    <BookingTable 
+                        items={filteredBookings}
+                        selected={orders}
+                        onClick={toggleBooking}/>
                     <Agenda 
                         schedule={scheduleCheck("PA1")}
                         duration={duration}
-                        //schedule={appointment.schedule}
                         door="PA1"
                         appointments={planning.appointments}
                         date={ selectedDate } 
-                        onClick={handleChangeDate}/>
+                        onClick={handleChangeDate}
+                        onPrevious={previousDay}
+                        onNext={nextDay}/>
                     <Button type="submit">Envoyer</Button>    
                 </form>    
             </Container>
@@ -114,7 +128,6 @@ const AppointmentPage = () => {
                     <Paper >
                         <div><pre>{JSON.stringify(bookings, null, 2)}</pre></div>
                     </Paper>
-                   
                 </Grid>    
                 <Grid item xs>    
                     <Paper >

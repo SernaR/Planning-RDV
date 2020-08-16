@@ -6,9 +6,9 @@ export const APPOINTMENT_API = API_URL + 'appointments'
 
 //export const itemsPerPage = 15
 
-//heure de début et fin de l'agenda, par défaut 8h - 17h
-export const AGENDA_START = 32
-export const AGENDA_END = 68
+//heure de début et fin de l'agenda, par numéro de quarts d'heure
+export const AGENDA_START = 32 // = 8h
+export const AGENDA_END = 68 // = 17h
 
 //temps de déchargement
 export const UNLOADING_TIME = {
@@ -17,12 +17,13 @@ export const UNLOADING_TIME = {
     PE: 1000
 }
 
-//ref planning = dateReference.format('YYYY') + '-' + dateReference.dayOfYear()
-/*{
-   " status": {
-       "SET": 0,
-       "DELIVER": 1,
-       "POSTPONE": 2,
-       "CANCEL": 3
-   }
-}*/
+//type articles
+export const WAREHOUSES = ["PA", "AE", "PE"]
+
+//statut du rendez-vous
+export const STATUS = {
+    SET: 0,
+    DELIVER: 1,
+    POSTPONE: 2,
+    CANCEL: 3
+}

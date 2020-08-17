@@ -13,6 +13,9 @@ import useFetchPlanning from '../hooks/useFetchPlanning';
 import useToggleBooking from '../hooks/useToggleBooking';
 import Filter from '../components/booking/Filter';
 
+const STEP_1 = 1
+const STEP_2 = 2
+const STEP_3 = 3
 //faire sauter le RDV si modif qté
 
 const AppointmentPage = () => {
@@ -27,7 +30,9 @@ const AppointmentPage = () => {
         supplier: '',
         warehouse: 'PA'
     })
-    
+
+    const [step, setStep] = useState(STEP_1)
+  
     useEffect(() => {
         fetchBooking()
     },[])
@@ -39,6 +44,19 @@ const AppointmentPage = () => {
         }catch(err) {
             setToast(true)
         }
+    }
+
+    const isSupplierDataFilled = () => { 
+        return selectedDate && orders.length > 0
+    }
+
+    const stepBack = () => {
+        delete appointment.schedule
+        setStep(step => step - 1)   
+    }
+
+    const isSchecduleFilled = () => {
+        return appointment.schedule
     }
 
     const scheduleCheck = (door) => {
@@ -72,15 +90,16 @@ const AppointmentPage = () => {
         getPlanning(moment(selectedDate).subtract(1, 'days'))
     }
 
-    const handleSubmit = async() => {
+    const handleSubmit = async(e) => {
+        e.preventDefault()
         //faire les vérifications
         const newAppointment = { ...appointment, 
             planning: planning['@id'],
             duration,
             orders,
-            number: "string"
+            number: `${planning.reference}-${planning.count + 1}`
         }
-       
+        
         try {
             const result = await Api.create(APPOINTMENT_API, newAppointment)
             console.log('appointment:', result)
@@ -89,7 +108,7 @@ const AppointmentPage = () => {
             setToast(true)
         }
     }
-
+    
     return (
         <PageWrap
             //loading={loading}
@@ -106,21 +125,35 @@ const AppointmentPage = () => {
                         filters={filters} 
                         onFilter={handleFilter}
                         askedDate={appointment.askedDate} 
-                        onChangeDate={handleChangeDate}/>
-                    <BookingTable 
-                        items={filteredBookings}
-                        selected={orders}
-                        onClick={toggleBooking}/>
-                    <Agenda 
-                        schedule={scheduleCheck("PA1")}
-                        duration={duration}
-                        door="PA1"
-                        appointments={planning.appointments}
-                        date={ selectedDate } 
-                        onClick={handleChangeDate}
-                        onPrevious={previousDay}
-                        onNext={nextDay}/>
-                    <Button type="submit">Envoyer</Button>    
+                        onChangeDate={handleChangeDate}
+                    >
+                        { isSupplierDataFilled() && <>
+                        {step == STEP_1 && 
+                            <Button color='primary' onClick={ () => setStep(step => step + 1) }>Suivant</Button>
+                        || <>
+                            <Button color='secondary' onClick={stepBack}>Précedent</Button>
+                            { isSchecduleFilled() && <Button type="submit">Envoyer</Button>}
+                        </>}    
+                    </>}  
+                    </Filter>
+
+                    {step === STEP_1 && 
+                        <BookingTable 
+                            items={filteredBookings}
+                            selected={orders}
+                            onClick={toggleBooking}/>
+                    ||    
+                        <Agenda  
+                            schedule={scheduleCheck("PA1")}
+                            duration={duration}
+                            door="PA1"
+                            appointments={planning.appointments}
+                            date={ selectedDate } 
+                            onClick={handleChangeDate}
+                            onPrevious={previousDay}
+                            onNext={nextDay}/>
+                    }
+                    
                 </form>    
             </Container>
             <Grid container spacing={3}>
@@ -137,8 +170,6 @@ const AppointmentPage = () => {
                 <Grid item xs>    
                     <Paper >
                         <div><pre>{JSON.stringify(appointment, null, 2)}</pre></div>
-                        <div><pre>{JSON.stringify(selectedDate, null, 2)}</pre></div>
-                        <div><pre>{JSON.stringify(planning, null, 2)}</pre></div>
                     </Paper>
                 </Grid>
             </Grid>   

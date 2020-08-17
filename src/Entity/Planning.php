@@ -34,7 +34,7 @@ class Planning
 
     /**
      * @ORM\Column(type="string", length=255)
-     * 
+     * @Groups({"planning_read"})
      */
     private $reference;
 
@@ -43,6 +43,13 @@ class Planning
      * @Groups({"planning_read"})
      */
     private $appointments = [];
+
+    /**
+     * number of appointments in planning
+     * @Groups({"planning_read"})
+     * @var [integer]
+     */
+    private $count;
 
     public function __construct($reference)
     {
@@ -96,5 +103,10 @@ class Planning
         }
 
         return $this;
+    }
+
+    public function getCount(): ?int
+    {
+        return count($this->getAppointments());
     }
 }

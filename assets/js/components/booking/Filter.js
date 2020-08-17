@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Filter = ({ filters = {}, onFilter, askedDate, onChangeDate }) => {
+const Filter = ({ filters = {}, onFilter, askedDate, onChangeDate, children }) => {
     const classes = useStyles()    
     
     return ( 
@@ -53,6 +53,9 @@ const Filter = ({ filters = {}, onFilter, askedDate, onChangeDate }) => {
                                     onChange={onChangeDate} 
                                     name="askedDate" 
                                     value={askedDate}/>
+                            </TableCell>
+                            <TableCell>
+                                {children}
                             </TableCell>
                         </TableRow>  
                     </TableBody>

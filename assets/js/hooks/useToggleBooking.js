@@ -2,21 +2,7 @@ import { useState } from "react"
 import { UNLOADING_TIME } from '../services/config'
 
 const setDuration = (door,quantity) => { 
-    let duration
-    switch (door) {
-        case 'PA':
-          duration = Math.ceil(quantity/UNLOADING_TIME.PA)
-          break;
-        case 'AE':
-            duration = Math.ceil(quantity/UNLOADING_TIME.AE)
-            break;
-        case 'PE':
-            duration = Math.ceil(quantity/UNLOADING_TIME.PE)
-            break;
-        default:
-          duration = 1
-      }
-    return duration
+    return Math.ceil(quantity/UNLOADING_TIME[door]) || 1
 }
 
 const useToggleBooking = () => {
@@ -37,10 +23,19 @@ const useToggleBooking = () => {
         })
     }
 
+    const removeAllBookings = () => {
+        setState({
+            totalQuantity: 0,
+            orders: [],
+            door: ''
+        })
+    }
+
     return [
         setDuration(state.door, state.totalQuantity), 
         state.orders, 
-        toggleBooking
+        toggleBooking,
+        removeAllBookings,
     ]
 }
  

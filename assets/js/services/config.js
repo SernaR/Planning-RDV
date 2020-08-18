@@ -1,3 +1,6 @@
+import moment from 'moment'
+moment.locale("fr")
+
 export const API_URL = 'https://localhost:8000/api/'
 
 export const BOOKING_API = API_URL + 'orders'
@@ -26,4 +29,9 @@ export const STATUS = {
     DELIVER: 1,
     POSTPONE: 2,
     CANCEL: 3
+}
+
+export const DELIVERY_WINDOW = {
+    min: moment().add(1, 'd'),
+    max: moment().add(15, 'd')
 }

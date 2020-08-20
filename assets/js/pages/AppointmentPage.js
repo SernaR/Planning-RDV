@@ -43,19 +43,18 @@ const AppointmentPage = () => {
         }catch(err) {
             setToast(true)
         }
-    }
+    } // faire swr
 
     const isSupplierDataFilled = () => { 
         return selectedDate && orders.length > 0
     }
 
+    const isSchecduleFilled = () => {
+        return appointment.schedule
+    }
     const stepBack = () => {
         delete appointment.schedule
         setStep(step => step - 1)   
-    }
-
-    const isSchecduleFilled = () => {
-        return appointment.schedule
     }
 
     const scheduleCheck = (door) => {
@@ -83,13 +82,12 @@ const AppointmentPage = () => {
         setFilters({...filters, [target.name]:target.value})
     }
 
-    // à mettre dans le hook////////////////////////////////////////////////////////////////
     const nextDay = () => {
         if(selectedDate <= DELIVERY_WINDOW.max) getPlanning(moment(selectedDate).add(1, 'days'))
     }
 
     const previousDay = () => {
-        if(selectedDate > appointment.askedDate) getPlanning(moment(selectedDate).subtract(1, 'days')) // ou askedDate ???
+        if(selectedDate > appointment.askedDate) getPlanning(moment(selectedDate).subtract(1, 'days')) 
     }
 
     const handleSubmit = async(e) => {

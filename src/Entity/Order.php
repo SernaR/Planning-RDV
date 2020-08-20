@@ -67,10 +67,8 @@ class Order
      */
     private $incoterm;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $isFree = 1;
+    
+    //private $isFree;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -200,16 +198,9 @@ class Order
         return $this;
     }
 
-    public function getIsFree(): ?bool
+    public function isFree(): ?bool
     {
-        return $this->isFree;
-    }
-
-    public function setIsFree(bool $isFree): self
-    {
-        $this->isFree = $isFree;
-
-        return $this;
+        return count($this->getAppointments()) === 0 ;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface

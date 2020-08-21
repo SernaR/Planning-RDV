@@ -9,13 +9,15 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=OrderRepository::class)
  * @ORM\Table(name="`order`")
  * @ApiResource(
  *     collectionOperations={"get"},
- *     itemOperations={"get"}
+ *     itemOperations={"get"},
+ *     normalizationContext={"groups"={"orders_read"}}, 
  * )
  */
 class Order
@@ -29,21 +31,25 @@ class Order
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"orders_read"})
      */
     private $number;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"orders_read"})
      */
     private $booking;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"orders_read"})
      */
     private $quantity;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"orders_read"})
      */
     private $incotermDate;
 
@@ -54,6 +60,7 @@ class Order
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"orders_read"})
      */
     private $warehouse;
 
@@ -84,6 +91,7 @@ class Order
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"orders_read"})
      */
     private $supplier;
 

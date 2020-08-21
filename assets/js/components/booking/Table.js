@@ -22,7 +22,7 @@ const BookingTable = ({items, selected, onClick}) => {
         <div className={classes.root}>
             <Paper className={classes.paper}>
                 <TableContainer>
-                    <Table>
+                    <Table size='small'>
                         <TableHead>
                             <TableRow>
                                 <TableCell></TableCell>
@@ -37,7 +37,7 @@ const BookingTable = ({items, selected, onClick}) => {
                                 <TableRow
                                     hover
                                     onClick={ () => onClick(item['@id'], item.quantity, item.warehouse) }
-                                    key={item.id}
+                                    key={item.number}
                                 >
                                     <TableCell>
                                         <Checkbox checked={isSelected(item['@id'])}/>

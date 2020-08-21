@@ -3,7 +3,7 @@ import moment from 'moment'
 
 import PageWrap from '../components/ui/PageWrap';
 import BookingTable from '../components/booking/Table'
-import Picker from '../components/form/DatePicker'
+import Paginate from '../components/ui/Paginate';
 
 import Api from '../services/api'
 import { BOOKING_API, APPOINTMENT_API, DELIVERY_WINDOW } from '../services/config'
@@ -19,11 +19,13 @@ const STEP_2 = 2
 
 const AppointmentPage = () => {
     const [toast, setToast] = useState(false) 
+    const itemsPerPage = 10;
 
     const [selectedDate, planning, getPlanning] = useFetchPlanning()
     const [duration, orders, toggleBooking, removeAllBookings] = useToggleBooking()
     
     const [bookings, setBookings] = useState([])
+    const [currentPage, setCurrentPage] = useState(1);
     const [appointment, setAppointment] = useState({})
     const [filters, setFilters] = useState({
         supplier: '',
@@ -70,16 +72,26 @@ const AppointmentPage = () => {
             && booking.warehouse.toLowerCase().includes(filters.warehouse.toLowerCase())
     })
 
+    const paginatedCustomers = Paginate.getData(filteredBookings, currentPage, itemsPerPage);
+
     const appointmentsPerDoor = (door) => planning.appointments.filter( appointment => appointment.door === door)
+
+    const handlePageChange = (page) => setCurrentPage(page);
 
     const handleChangeDate = (name, date, isSelected, door) => { 
         setAppointment({ ...appointment, [name]: date, door })
         if (isSelected) getPlanning(date)
     }
 
-    const handleFilter = ({target}) => {
-        if(target.name = 'warehouse') removeAllBookings()
+    const handleChangeWarehouse = ({target}) => {
+        removeAllBookings()
+        setCurrentPage(1);
         setFilters({...filters, [target.name]:target.value})
+    }
+
+    const handleChangeSupplier = ({target}) => {
+        setFilters({...filters, [target.name]:target.value})
+        setCurrentPage(1);
     }
 
     const nextDay = () => {
@@ -123,8 +135,9 @@ const AppointmentPage = () => {
                 <form onSubmit={handleSubmit}>
                     <Filter
                         filters={filters} 
-                        onFilter={handleFilter}
                         askedDate={appointment.askedDate} 
+                        onChangeSupplier={handleChangeSupplier}
+                        onChangeWarehouse={handleChangeWarehouse}
                         onChangeDate={handleChangeDate}
                     >
                         { isSupplierDataFilled() && <>
@@ -137,11 +150,17 @@ const AppointmentPage = () => {
                     </>}  
                     </Filter>
 
-                    {step === STEP_1 && 
+                    {step === STEP_1 && <>
                         <BookingTable 
-                            items={filteredBookings}
+                            items={paginatedCustomers}
                             selected={orders}
                             onClick={toggleBooking}/>
+                         {itemsPerPage < filteredBookings.length &&<Paginate 
+                            currentPage={currentPage}
+                            itemsPerPage={itemsPerPage}
+                            length={filteredBookings.length}
+                            onPageChanged={handlePageChange}
+                         />}</>    
                     ||    
                         <><Agenda  
                             schedule={scheduleCheck(filters.warehouse)}
@@ -170,7 +189,7 @@ const AppointmentPage = () => {
             <Grid container spacing={3}>
                 <Grid item xs>
                     <Paper >
-                        <div><pre>{JSON.stringify(bookings, null, 2)}</pre></div>
+                        <div><pre>{JSON.stringify(filters, null, 2)}</pre></div>
                     </Paper>
                 </Grid>    
                 <Grid item xs>    

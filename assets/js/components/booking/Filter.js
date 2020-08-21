@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Filter = ({ filters = {}, onFilter, askedDate, onChangeDate, children }) => {
+const Filter = ({ filters, onChangeWarehouse, onChangeSupplier, askedDate, onChangeDate, children }) => {
     const classes = useStyles()    
     
     return ( 
@@ -33,7 +33,7 @@ const Filter = ({ filters = {}, onFilter, askedDate, onChangeDate, children }) =
                                     label="Fournisseur"
                                     name="supplier"
                                     value={filters.supplier}
-                                    onChange={onFilter}
+                                    onChange={onChangeSupplier}
                                     variant="outlined"
                                 />
                             </TableCell>
@@ -41,7 +41,7 @@ const Filter = ({ filters = {}, onFilter, askedDate, onChangeDate, children }) =
                                 <Select
                                     value={filters.warehouse}
                                     name="warehouse"
-                                    onChange={onFilter}
+                                    onChange={onChangeWarehouse}
                                     label="Type article"
                                     >
                                     {WAREHOUSES.map ((warehouse, index) => <MenuItem key={index} value={warehouse}>{ warehouse }</MenuItem>)}  

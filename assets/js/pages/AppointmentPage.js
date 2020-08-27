@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const AppointmentPage = () => {
+const AppointmentPage = ({history}) => {
     const classes = useStyles()
     const [toast, setToast] = useState(false) 
     const itemsPerPage = 10;
@@ -132,7 +132,7 @@ const AppointmentPage = () => {
         try {
             const result = await Api.create(APPOINTMENT_API, newAppointment)
             console.log('appointment:', result)
-            //vider les states   
+            history.push('/rendez-vous/confirmation/' + result.id)
         }catch(err) {
             setToast(true)
         }

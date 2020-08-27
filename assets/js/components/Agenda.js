@@ -7,7 +7,8 @@ import { AGENDA_START, AGENDA_END } from '../services/config'
 import SimpleModal from '../components/ui/SimpleModal'
 
 const setForbiddenPositions = (appointments) => {
-    const forbiddenPositions = []
+    const lastQuarter = moment(moment().startOf('day').toDate()).add((AGENDA_END * 15), 'm').format('HH:mm')
+    const forbiddenPositions = [lastQuarter]
     const appointmentNumbers = {}
 
     appointments.map( ({number, schedule, duration}) => {

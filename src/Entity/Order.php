@@ -34,19 +34,19 @@ class Order
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"orders_read"})
+     * @Groups({"orders_read", "appointment_read"})
      */
     private $number;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"orders_read"})
+     * @Groups({"orders_read", "appointment_read"})
      */
     private $booking;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"orders_read"})
+     * @Groups({"orders_read", "appointment_read"})
      */
     private $quantity;
 

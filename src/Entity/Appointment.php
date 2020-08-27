@@ -15,7 +15,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=AppointmentRepository::class)
  * @ApiResource(
  *     collectionOperations={"get", "post"},
- *     itemOperations={"get"}
+ *     itemOperations={
+ *          "get": {
+ *              "normalization_context"={"groups"={"appointment_read"}}
+ *          }
+ *      }
  * )
  */
 class Appointment
@@ -29,7 +33,7 @@ class Appointment
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"planning_read"})
+     * @Groups({"planning_read", "appointment_read"})
      */
     private $number;
 
@@ -41,6 +45,7 @@ class Appointment
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"appointment_read"})
      */
     private $askedDate;
 
@@ -51,7 +56,7 @@ class Appointment
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"planning_read"})
+     * @Groups({"planning_read", "appointment_read"})
      */
     private $schedule;
 
@@ -74,6 +79,7 @@ class Appointment
 
     /**
      * @ORM\ManyToMany(targetEntity=Order::class, inversedBy="appointments")
+     * @Groups({"appointment_read"})
      */
     private $orders;
 

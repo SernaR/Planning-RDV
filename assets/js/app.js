@@ -16,6 +16,7 @@ moment.locale("fr")
 import Navbar from './components/ui/Navbar';
 import Homepage from './pages/Homepage';
 import AppointmentPage from './pages/AppointmentPage';
+import Summary from './pages/Summary';
 
 const App = () => {
     const NavbarWithRouter = withRouter(Navbar);
@@ -27,6 +28,7 @@ const App = () => {
                     <NavbarWithRouter />
                     <Switch>
                         <Route path="/rendez-vous/nouveau" component={ AppointmentPage } />
+                        <Route path="/rendez-vous/confirmation/:id" component={ Summary } />
                         <Route path="/" component={ Homepage } />
                     </Switch>  
                 </ HashRouter>

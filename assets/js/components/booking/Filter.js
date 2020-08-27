@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Filter = ({ filters, onChangeWarehouse, onChangeSupplier, askedDate, onChangeDate, children }) => {
+const Filter = ({ filters, onChangeWarehouse, onChangeSupplier, onChangeBooking, askedDate, onChangeDate, children }) => {
     const classes = useStyles()    
     
     return ( 
@@ -28,8 +28,24 @@ const Filter = ({ filters, onChangeWarehouse, onChangeSupplier, askedDate, onCha
                             <TableCell></TableCell>
                             <TableCell>Filter</TableCell>
                             <TableCell>
+                                <Picker 
+                                    label="Date demandée" 
+                                    onChange={onChangeDate} 
+                                    name="askedDate" 
+                                    value={askedDate}/>
+                            </TableCell>
+                            <TableCell>
                                 <TextField
-                                    size="small"
+                                    label="Booking"
+                                    name="booking"
+                                    value={filters.booking}
+                                    onChange={onChangeBooking}
+                                    variant="outlined"
+                                />
+                            </TableCell>
+                            
+                            <TableCell>
+                                <TextField
                                     label="Fournisseur"
                                     name="supplier"
                                     value={filters.supplier}
@@ -37,22 +53,16 @@ const Filter = ({ filters, onChangeWarehouse, onChangeSupplier, askedDate, onCha
                                     variant="outlined"
                                 />
                             </TableCell>
+                            
                             <TableCell>
                                 <Select
+                                    variant="outlined"
                                     value={filters.warehouse}
                                     name="warehouse"
                                     onChange={onChangeWarehouse}
-                                    label="Type article"
                                     >
                                     {WAREHOUSES.map ((warehouse, index) => <MenuItem key={index} value={warehouse}>{ warehouse }</MenuItem>)}  
                                 </Select>
-                            </TableCell>
-                            <TableCell>
-                                <Picker 
-                                    label="Date demandée" 
-                                    onChange={onChangeDate} 
-                                    name="askedDate" 
-                                    value={askedDate}/>
                             </TableCell>
                             <TableCell>
                                 {children}

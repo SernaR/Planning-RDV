@@ -18,6 +18,7 @@ function Picker({ label, minDate, maxDate, onChange, name, value=null, error }) 
             className={classes.root}
             //variant="static"
             label={label}
+            inputVariant="outlined"
             value={value}
             onChange={date => onChange(name, date, true)}
             error={error}

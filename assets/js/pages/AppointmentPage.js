@@ -7,28 +7,38 @@ import Paginate from '../components/ui/Paginate';
 
 import Api from '../services/api'
 import { BOOKING_API, APPOINTMENT_API, DELIVERY_WINDOW } from '../services/config'
-import { Container, Grid, Paper, Button } from '@material-ui/core';
+import { Container, Grid, Paper, Button, makeStyles, Chip } from '@material-ui/core';
+import RotateLeftTwoToneIcon from '@material-ui/icons/RotateLeftTwoTone';
 import Agenda from '../components/Agenda';
 import useFetchPlanning from '../hooks/useFetchPlanning';
 import useToggleBooking from '../hooks/useToggleBooking';
 import Filter from '../components/booking/Filter';
 
+
 const STEP_1 = 1
-const STEP_2 = 2
-//mettre type article dans la config
+//const STEP_2 = 2
+
+const useStyles = makeStyles(theme => ({
+    footer: {
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    }
+}))
 
 const AppointmentPage = () => {
+    const classes = useStyles()
     const [toast, setToast] = useState(false) 
     const itemsPerPage = 10;
 
     const [selectedDate, planning, getPlanning] = useFetchPlanning()
-    const [duration, orders, toggleBooking, removeAllBookings] = useToggleBooking()
+    const [totalQuantity, duration, orders, toggleBooking, toggleAllBookings, removeAllBookings] = useToggleBooking()
     
     const [bookings, setBookings] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
     const [appointment, setAppointment] = useState({})
     const [filters, setFilters] = useState({
         supplier: '',
+        booking: '',
         warehouse: 'PA'
     })
 
@@ -40,7 +50,7 @@ const AppointmentPage = () => {
 
     const fetchBooking = async() => {
         try {
-            const bookings = await Api.findAll(BOOKING_API)
+            const bookings = await Api.findAll(BOOKING_API + '?exists[appointments]=false')
             setBookings(bookings)    
         }catch(err) {
             setToast(true)
@@ -70,9 +80,10 @@ const AppointmentPage = () => {
     const filteredBookings = bookings.filter (booking => {
         return booking.supplier.toLowerCase().includes(filters.supplier.toLowerCase()) 
             && booking.warehouse.toLowerCase().includes(filters.warehouse.toLowerCase())
-    })
+            && booking.booking.includes(filters.booking)
+    }) 
 
-    const paginatedCustomers = Paginate.getData(filteredBookings, currentPage, itemsPerPage);
+    const paginatedOrders = Paginate.getData(filteredBookings, currentPage, itemsPerPage);
 
     const appointmentsPerDoor = (door) => planning.appointments.filter( appointment => appointment.door === door)
 
@@ -82,6 +93,12 @@ const AppointmentPage = () => {
         setAppointment({ ...appointment, [name]: date, door })
         if (isSelected) getPlanning(date)
     }
+
+    const handleChangeBooking = ({target}) => {
+        setFilters({...filters, [target.name]:target.value})
+        setCurrentPage(1);
+    }
+
 
     const handleChangeWarehouse = ({target}) => {
         removeAllBookings()
@@ -137,9 +154,12 @@ const AppointmentPage = () => {
                         filters={filters} 
                         askedDate={appointment.askedDate} 
                         onChangeSupplier={handleChangeSupplier}
+                        onChangeBooking={handleChangeBooking}
                         onChangeWarehouse={handleChangeWarehouse}
                         onChangeDate={handleChangeDate}
                     >
+                        <Chip label={totalQuantity +' colis'} color="primary"/>
+                        <Chip label={orders.length +' EP'} color="primary"/>
                         { isSupplierDataFilled() && <>
                         {step == STEP_1 && 
                             <Button color='primary' onClick={ () => setStep(step => step + 1) }>Suivant</Button>
@@ -152,15 +172,19 @@ const AppointmentPage = () => {
 
                     {step === STEP_1 && <>
                         <BookingTable 
-                            items={paginatedCustomers}
+                            items={paginatedOrders}
                             selected={orders}
+                            onSelectAll={() => toggleAllBookings(filteredBookings)}
                             onClick={toggleBooking}/>
-                         {itemsPerPage < filteredBookings.length &&<Paginate 
-                            currentPage={currentPage}
-                            itemsPerPage={itemsPerPage}
-                            length={filteredBookings.length}
-                            onPageChanged={handlePageChange}
-                         />}</>    
+                        <Grid container className={classes.footer}>
+                            <Button size="small" onClick={removeAllBookings}><RotateLeftTwoToneIcon/> Réinitialiser</Button>    
+                            {itemsPerPage < filteredBookings.length &&<Paginate 
+                                currentPage={currentPage}
+                                itemsPerPage={itemsPerPage}
+                                length={filteredBookings.length}
+                                onPageChanged={handlePageChange}
+                            />}
+                        </Grid></>    
                     ||    
                         <><Agenda  
                             schedule={scheduleCheck(filters.warehouse)}

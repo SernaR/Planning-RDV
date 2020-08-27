@@ -4,16 +4,19 @@ import { Button, Paper, Grid, IconButton, Typography, makeStyles, ButtonGroup } 
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import { AGENDA_START, AGENDA_END } from '../services/config'
-
+import SimpleModal from '../components/ui/SimpleModal'
 
 const setForbiddenPositions = (appointments) => {
     const forbiddenPositions = []
-    appointments.map( ({schedule, duration}) => {
+    const appointmentNumbers = {}
+
+    appointments.map( ({number, schedule, duration}) => {
         for (let i = 0; i < duration; i++) {
             forbiddenPositions.push(moment(schedule).add((i * 15), 'm').format('HH:mm'))
+            appointmentNumbers[moment(schedule).add((i * 15), 'm').format('HH:mm')] = number
         }
     }) 
-    return forbiddenPositions
+    return {forbiddenPositions, appointmentNumbers}
 }
 
 const setSelection = (schedule, duration) => {
@@ -54,14 +57,19 @@ const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, door, sc
     const classes = useStyles();
 
     const agenda = []
-    const forbiddenPositions = setForbiddenPositions(appointments)
+    const {forbiddenPositions, appointmentNumbers} = setForbiddenPositions(appointments)
     const selection = setSelection (schedule, duration) 
+    const [open, setOpen] = React.useState(false);
 
-    const handleClick = (date) => { 
-        if(isPlaceEnough(date, duration, forbiddenPositions)) {
-            onClick("schedule", date, false, door)
+    const handleClick = ({date, isForbidden, text}) => { 
+        if(isForbidden){
+            setOpen(true)
         }else {
-            alert('pas assez de temps disponible sur cette plage')
+            if(isPlaceEnough(date, duration, forbiddenPositions)) {
+                onClick("schedule", date, false, door)
+            }else {
+                alert('pas assez de temps disponible sur cette plage')
+            }
         }
     }
 
@@ -75,14 +83,14 @@ const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, door, sc
             const isSelected = selection.includes(time)
            
             agenda.push({
-                text: isForbidden ? "Occupé" : isSelected ? "Positionné" : time,   
+                text: isForbidden ? appointmentNumbers[time] : isSelected ? "Positionné" : time,   
                 isForbidden,
                 date
             })
         }
     }
 
-    return ( 
+    return ( <>
 
         <Paper className={classes.paper}>
             <Grid container item xs={12} className={classes.cockpit}>
@@ -102,16 +110,18 @@ const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, door, sc
                 {agenda.map( (quarter, index) => (
                     <Grid  item xs={1} key={index}>
                         <Button
-                            disabled={quarter.isForbidden} 
-                            onClick={() => handleClick(quarter.date)}
+                            onClick={() => handleClick(quarter)}
                             >{ quarter.text }
                         </Button>
                     </Grid> 
                 ))}
             </Grid> 
         </Paper>
-        
-     );
+        <SimpleModal 
+            open={open}
+            onClose={ () => setOpen(false)}
+        />
+    </> );
 }
  
 export default Agenda;

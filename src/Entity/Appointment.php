@@ -29,8 +29,9 @@ class Appointment
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"planning_read"})
      */
-    private $number = 'test';
+    private $number;
 
     /**
      * @Gedmo\Timestampable(on="create")

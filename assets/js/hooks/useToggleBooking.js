@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { UNLOADING_TIME } from '../services/config'
 
-const setDuration = (door,quantity) => { 
+const setDuration = (door, quantity) => { 
     return Math.ceil(quantity/UNLOADING_TIME[door]) || 1
 }
 
@@ -23,6 +23,21 @@ const useToggleBooking = () => {
         })
     }
 
+    const toggleAllBookings = (bookings) => {
+        //const orders = state.orders
+        const isNew = state.totalQuantity === 0 //orders.indexOf(bookings[0]['@id']) === -1
+
+        isNew ? addAllBookings(bookings) : removeAllBookings()
+    }
+
+    const addAllBookings = (bookings) => {
+        setState({
+            totalQuantity: bookings.map(booking => booking.quantity).reduce((a, b)=> a + b, 0), 
+            orders: bookings.map(booking => booking['@id']), 
+            door: bookings[0]['warehouse'],
+        })
+    }
+
     const removeAllBookings = () => {
         setState({
             totalQuantity: 0,
@@ -30,12 +45,15 @@ const useToggleBooking = () => {
             door: ''
         })
     }
-
+    
     return [
+        state.totalQuantity,
         setDuration(state.door, state.totalQuantity), 
         state.orders, 
         toggleBooking,
+        toggleAllBookings,
         removeAllBookings,
+        
     ]
 }
  

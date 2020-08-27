@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -19,6 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     itemOperations={"get"},
  *     normalizationContext={"groups"={"orders_read"}}, 
  * )
+ * @ApiFilter(ExistsFilter::class, properties={"appointments"})
  */
 class Order
 {
@@ -73,9 +76,6 @@ class Order
      * @ORM\Column(type="string", length=255)
      */
     private $incoterm;
-
-    
-    //private $isFree;
 
     /**
      * @Gedmo\Timestampable(on="create")

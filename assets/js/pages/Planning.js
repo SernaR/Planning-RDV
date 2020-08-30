@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Paper, Grid, IconButton, Typography } from '@material-ui/core';
+import { Container, Paper, Grid, IconButton, Typography, FormGroup, FormControlLabel, Switch } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
@@ -12,7 +12,7 @@ import Api from '../services/api'
 
 import moment from 'moment'
 import PlanningTable from '../components/PlanningTable';
-import Appointment from '../components/appointment';
+import Appointment from '../components/Appointment';
 moment.locale("fr")
 
 const setRange = (date) => {
@@ -32,6 +32,7 @@ const Planning = () => {
     const [plannings, setPlannings] = useState([])
     const [dateInit, setDateInit] = useState(moment().weekday(0) )
     const {monday, saturday } = setRange(dateInit)
+    const [isOtherType, setOtherType] = useState(false)
 
     useEffect(() => {
         fetchData()
@@ -86,12 +87,19 @@ const Planning = () => {
                             <NavigateNextIcon />
                         </IconButton> 
                     </Grid>
+                    <FormGroup>
+                        <FormControlLabel
+                            control={<Switch size="small" checked={isOtherType} onChange={() => setOtherType(!isOtherType)} />}
+                            label="Autres Types"
+                        />
+                    </FormGroup>
                 </Paper>
 
                 <Grid container spacing={1}>
                     { plannings.map( planning =>
                         <Grid item xs={4} sm={2} key={planning.reference}> 
                             <PlanningTable 
+                                isOtherType={isOtherType}
                                 onModal={handleModal}
                                 appointments={planning.appointments}/> 
                         </Grid>

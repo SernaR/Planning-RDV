@@ -22,8 +22,7 @@ function fetchDoorsAppointments(appointments) {
     return {doors}
 }  
 
-const PlanningTable = ({ appointments = [], onModal }) => { 
-    const isOtherType = false
+const PlanningTable = ({ appointments = [], onModal, isOtherType }) => { 
     const rows = []
     const { doors } = fetchDoorsAppointments(appointments)
     const now = moment(moment().startOf('day').toDate())

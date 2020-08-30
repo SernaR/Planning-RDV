@@ -4,7 +4,9 @@ import { PLANNING_API } from '../services/config'
 import Api from '../services/api'
 
 const planningReference = (date) => { 
-    return { reference: date.format('YYYY') + '-' + date.dayOfYear() }
+    return { 
+        reference: date.format('YYMMDD')
+    }
 }
 
 const useFetchPlanning = () => {
@@ -13,11 +15,13 @@ const useFetchPlanning = () => {
         planning: {}
     })
 
-    const getPlanning = async (date) => {
+    const getPlanning = async (date) => { 
         if(!date) return
 
         try{
             const planning = await Api.create(PLANNING_API, planningReference(date))
+            planning.number = date.format('YY') + date.dayOfYear()
+
             setState({
                 selectedDate: date,
                 planning

@@ -60,11 +60,10 @@ const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, door, sc
     const agenda = []
     const {forbiddenPositions, appointmentNumbers} = setForbiddenPositions(appointments)
     const selection = setSelection (schedule, duration) 
-    const [open, setOpen] = React.useState(false);
-
+    
     const handleClick = ({date, isForbidden, text}) => { 
         if(isForbidden){
-            setOpen(true)
+            //faire quelquechose
         }else {
             if(isPlaceEnough(date, duration, forbiddenPositions)) {
                 onClick("schedule", date, false, door)
@@ -118,10 +117,6 @@ const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, door, sc
                 ))}
             </Grid> 
         </Paper>
-        <SimpleModal 
-            open={open}
-            onClose={ () => setOpen(false)}
-        />
     </> );
 }
  

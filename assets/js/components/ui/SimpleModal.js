@@ -3,31 +3,59 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
+//import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-export default function AlertDialog({ open, onClose }) {
+import moment from 'moment'
+
+function fetchData(orders) {
+  if( !orders) return { suppliers: [], quantity: 0}
+  
+  return {
+    suppliers: [ ...new Set(orders.map(order => order.supplier)) ],
+    quantity: orders.reduce(((acc, current) => acc + current.quantity), 0)
+  }
+}  
+
+export default function SimpleModal({ content, open, onClose }) {
+  
+  const { suppliers, quantity } = fetchData(content.orders)
+  
+  const fetchOrders = suppliers.map( (supplier, index) => {
+    const orders = content.orders.filter( order => order.supplier === supplier)
+    return <div key={index}>     
+      Fournisseur : { supplier } 
+      <ul>
+        { orders.map( order => <li key={order.number}>EP {order.number} : {order.quantity} colis</li>) }
+      </ul>
+    </div>
+  })
+
+  const duration = moment.duration(content.duration * 15, 'minutes').humanize()
+  
   return (
     <div>
       <Dialog
         open={open}
         onClose={onClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+        <DialogTitle>Rendez-vous n° {content.number}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous location data to
-            Google, even when no apps are running.
-          </DialogContentText>
+          <div> 
+            planifié le {moment(content.schedule).format(' DD-MM-YY à HH:mm')}
+            <ul>
+              <li>{quantity} colis, quai {content.door}</li>
+              <li>{duration} de déchargement</li>
+            </ul>
+          </div>
+          {fetchOrders}
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} color="primary">
-            Disagree
+            Annuler
           </Button>
           <Button onClick={onClose} color="primary" autoFocus>
-            Agree
+            Déplacer
           </Button>
         </DialogActions>
       </Dialog>

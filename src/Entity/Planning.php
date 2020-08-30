@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -16,11 +18,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     collectionOperations={
  *          "post":{
  *             "controller"=App\Controller\api\FindOrCreatePlanningController::class,
- *             "normalization_context"={"groups"={"planning_read"}}     
+ *              "normalization_context"={"groups"={"planning_read"}}     
+ *          },
+ *          "get":{
+ *              "normalization_context"={"groups"={"plannings_read"}} 
  *          }
  *      },
- *     itemOperations={"get"}
+ *     itemOperations={"get"} 
  * )
+ * @ApiFilter(RangeFilter::class, properties={"reference"})
  */
 class Planning
 {
@@ -28,19 +34,18 @@ class Planning
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * 
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"planning_read"})
+     * @Groups({"planning_read", "plannings_read"})
      */
     private $reference;
 
     /**
      * @ORM\OneToMany(targetEntity=Appointment::class, mappedBy="planning")
-     * @Groups({"planning_read"})
+     * @Groups({"planning_read", "plannings_read"})
      */
     private $appointments = [];
 

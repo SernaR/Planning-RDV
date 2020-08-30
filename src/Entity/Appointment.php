@@ -33,7 +33,7 @@ class Appointment
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"planning_read", "appointment_read"})
+     * @Groups({"planning_read", "appointment_read", "plannings_read"})
      */
     private $number;
 
@@ -56,7 +56,7 @@ class Appointment
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"planning_read", "appointment_read"})
+     * @Groups({"planning_read", "appointment_read", "plannings_read"})
      */
     private $schedule;
 
@@ -79,21 +79,21 @@ class Appointment
 
     /**
      * @ORM\ManyToMany(targetEntity=Order::class, inversedBy="appointments")
-     * @Groups({"appointment_read"})
+     * @Groups({"appointment_read", "plannings_read"})
      */
     private $orders;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"planning_read"})
+     * @Groups({"planning_read", "plannings_read"})
      */
-    private $duration = 3;
+    private $duration;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"planning_read"})
+     * @Groups({"planning_read", "plannings_read"})
      */
-    private $door = "PA1";
+    private $door;
 
     public function __construct()
     {

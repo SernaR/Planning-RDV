@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const AppointmentPage = ({history}) => {
+const Appointment = ({history}) => {
     const classes = useStyles()
     const [toast, setToast] = useState(false) 
     const itemsPerPage = 10;
@@ -43,7 +43,7 @@ const AppointmentPage = ({history}) => {
     })
 
     const [step, setStep] = useState(STEP_1)
-  
+    
     useEffect(() => {
         fetchBooking()
     },[])
@@ -122,11 +122,12 @@ const AppointmentPage = ({history}) => {
     const handleSubmit = async(e) => {
         e.preventDefault()
         //faire les vérifications
+    
         const newAppointment = { ...appointment, 
             planning: planning['@id'],
             duration,
             orders,
-            number: `${planning.reference}-${planning.count + 1}`
+            number: `${planning.number}-${planning.count + 1}`
         }
         
         try {
@@ -232,4 +233,4 @@ const AppointmentPage = ({history}) => {
      
 }
  
-export default AppointmentPage;
+export default Appointment;

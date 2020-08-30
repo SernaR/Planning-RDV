@@ -4,6 +4,7 @@ import {APPOINTMENT_API} from '../services/config'
 import { Paper, Container, Button } from '@material-ui/core';
 import PageWrap from '../components/ui/PageWrap';
 import { Link } from 'react-router-dom';
+import Appointment from '../components/Appointment';
 
 const Summary = ({match}) => {
     const [appointment, setAppointment] = useState()
@@ -32,6 +33,9 @@ const Summary = ({match}) => {
                 setToast(false)}}
         >  
             <Container>
+                <Paper >
+                    <Appointment content={appointment} />
+                </Paper>
                 <Paper >
                     <div><pre>{JSON.stringify(appointment, null, 2)}</pre></div>
                     <Button><Link to='/rendez-vous/nouveau'>Nouveau RDV</Link></Button>

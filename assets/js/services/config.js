@@ -15,9 +15,9 @@ export const AGENDA_END = 68 // = 17h
 
 //temps de déchargement
 export const UNLOADING_TIME = {
-    PA: 400,
-    AE: 80,
-    PE: 1000
+    PA: 400/4,
+    AE: 80/4,
+    PE: 1000/4
 }
 
 //type articles

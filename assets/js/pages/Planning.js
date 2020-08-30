@@ -12,6 +12,7 @@ import Api from '../services/api'
 
 import moment from 'moment'
 import PlanningTable from '../components/PlanningTable';
+import Appointment from '../components/appointment';
 moment.locale("fr")
 
 const setRange = (date) => {
@@ -99,8 +100,10 @@ const Planning = () => {
                 <SimpleModal
                     open={modal.open}
                     onClose={ () => setModal({ ...modal, open:false }) }
-                    content={ modal.appointment }
-                />
+                    title='Détail'
+                >
+                    <Appointment content={modal.appointment}/>
+                </SimpleModal>
                 <Paper >
                     <div><pre>{JSON.stringify(plannings, null, 2)}</pre></div>
                 </Paper>

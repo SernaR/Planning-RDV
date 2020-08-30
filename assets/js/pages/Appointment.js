@@ -132,7 +132,6 @@ const Appointment = ({history}) => {
         
         try {
             const result = await Api.create(APPOINTMENT_API, newAppointment)
-            console.log('appointment:', result)
             history.push('/rendez-vous/confirmation/' + result.id)
         }catch(err) {
             setToast(true)

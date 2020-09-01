@@ -252,4 +252,10 @@ class Appointment
 
         return $this;
     }
+
+    public function isActive(): ?bool 
+    {
+        return $this->getStatus() === 0 //voir config
+            || $this->getStatus() === 1;
+    }
 }

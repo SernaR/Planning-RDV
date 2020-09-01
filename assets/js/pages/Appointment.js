@@ -50,7 +50,13 @@ const Appointment = ({history}) => {
 
     const fetchBooking = async() => {
         try {
-            const bookings = await Api.findAll(BOOKING_API + '?exists[appointments]=false')
+            const rangeBookings = await Api.findAll(
+                BOOKING_API + 
+                '?incotermDate[before]=' + 
+                DELIVERY_WINDOW.max.format('YYYY-MM-DD') + 
+                '&order[incotermDate]=asc'
+            ) 
+            const bookings = rangeBookings.filter( booking => booking.isFree === true)
             setBookings(bookings)    
         }catch(err) {
             setToast(true)
@@ -213,7 +219,7 @@ const Appointment = ({history}) => {
             <Grid container spacing={3}>
                 <Grid item xs>
                     <Paper >
-                        <div><pre>{JSON.stringify(filters, null, 2)}</pre></div>
+                        <div><pre>{JSON.stringify(bookings, null, 2)}</pre></div>
                     </Paper>
                 </Grid>    
                 <Grid item xs>    

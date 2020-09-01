@@ -10,7 +10,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -21,7 +22,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     itemOperations={"get"},
  *     normalizationContext={"groups"={"orders_read"}}, 
  * )
- * @ApiFilter(ExistsFilter::class, properties={"appointments"})
+ * @ApiFilter(DateFilter::class, properties={"incotermDate"})
+ * @ApiFilter(OrderFilter::class, properties={"incotermDate": "ASC"})
  */
 class Order
 {
@@ -99,6 +101,11 @@ class Order
      * @ORM\ManyToMany(targetEntity=Appointment::class, mappedBy="orders")
      */
     private $appointments;
+
+    /**
+     * @Groups({"orders_read"})
+     */
+    private $isFree;
 
     public function __construct()
     {
@@ -206,9 +213,14 @@ class Order
         return $this;
     }
 
-    public function isFree(): ?bool
+    public function getIsFree(): ?bool
     {
-        return count($this->getAppointments()) === 0 ;
+        //return count($this->getAppointments()) === 0;
+        $status = [];
+        foreach ($this->appointments as $appointment){
+            array_push ($status, $appointment->isActive());
+        }
+        return !in_array( true, $status); 
     }
 
     public function getCreatedAt(): ?\DateTimeInterface

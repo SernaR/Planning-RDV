@@ -63,7 +63,7 @@ class CreateBookingCommand extends Command
                 date_format($orderFound->getIncotermDate(), 'Y-m-d') !== explode(" ", $booking->incoterm_date)[0] ||
                 $orderFound->getWarehouse() !== $booking->warehouse
             ) {
-                if ($orderFound->isFree()) { 
+                if ($orderFound->getIsFree()) { 
                     $orderFound
                         ->setBooking($booking->booking)
                         ->setQuantity($booking->quantity)

@@ -33,5 +33,6 @@ export const STATUS = {
 
 export const DELIVERY_WINDOW = {
     min: moment().add(1, 'd'),
-    max: moment().add(15, 'd')
+    max: moment().add(15, 'd'),
+    incotermDateMax: moment().add(30, 'd')
 }

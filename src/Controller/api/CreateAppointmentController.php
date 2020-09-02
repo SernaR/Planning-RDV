@@ -18,7 +18,8 @@ class CreateAppointmentController
     {
         //vérifier si la position est toujours libre ???
         
-        //$planning = $this->repo
+        //augmenter le compteur du planning
+
         return $data;
     }
 }

@@ -54,19 +54,21 @@ const Planning = () => {
         setDateInit(dateInit.clone().subtract(7, 'days'))
     }
 
-    const handleModal = (appointment) => {
+    const handleModal = (appointment, planningIndex) => {
         setModal({
             appointment,
-            open: true
+            open: true,
+            planningIndex
         })
     }
 
     const handleCancel = async() => {
         try {
-            await Api.update(APPOINTMENT_API, modal.appointment.id, { status: STATUS.CANCEL })
-            //const appointments = 
-            //rafraichir la vue
-            
+            await Api.update(APPOINTMENT_API, modal.appointment.id, { status: STATUS.CANCEL, planning: null })
+
+            const appointments = [...plannings[modal.planningIndex].appointments]
+            plannings[modal.planningIndex].appointments = appointments.filter( appointment => appointment.id !== modal.appointment.id)
+
             setModal({ 
                 appointment: {},
                 open: false 
@@ -109,10 +111,11 @@ const Planning = () => {
                 </Paper>
 
                 <Grid container spacing={1}>
-                    { plannings.map( planning =>
-                        <Grid item xs={4} sm={2} key={planning.reference}> 
+                    { plannings.map( (planning, index) =>
+                        <Grid item xs={4} sm={2} key={index}> 
                             <PlanningTable 
                                 isOtherType={isOtherType}
+                                planningIndex={index}
                                 onModal={handleModal}
                                 appointments={planning.appointments}/> 
                         </Grid>

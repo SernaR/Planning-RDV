@@ -22,7 +22,7 @@ function fetchDoorsAppointments(appointments) {
     return {doors}
 }  
 
-const PlanningTable = ({ appointments = [], onModal, isOtherType }) => { 
+const PlanningTable = ({ appointments = [], onModal, planningIndex, isOtherType }) => { 
     const rows = []
     const { doors } = fetchDoorsAppointments(appointments)
     const now = moment(moment().startOf('day').toDate())
@@ -30,7 +30,7 @@ const PlanningTable = ({ appointments = [], onModal, isOtherType }) => {
     const handleClick = (number) => {
         if (number) {
             const appointment = appointments.find( appointment => appointment.number === number)
-            onModal(appointment)
+            onModal(appointment, planningIndex)
         }
     }
 

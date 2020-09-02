@@ -254,9 +254,7 @@ class Appointment
 
         return $this;
     }
-    /**
-     * @Groups({"plannings_read"}) 
-     */
+    
     public function isActive(): ?bool 
     {
         return $this->getStatus() === 0 //voir config

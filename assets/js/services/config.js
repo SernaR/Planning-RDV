@@ -31,6 +31,7 @@ export const STATUS = {
     CANCEL: 3
 }
 
+//fenetre de récepetion
 export const DELIVERY_WINDOW = {
     min: moment().add(1, 'd'),
     max: moment().add(15, 'd'),

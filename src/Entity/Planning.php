@@ -27,6 +27,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     itemOperations={"get"} 
  * )
  * @ApiFilter(RangeFilter::class, properties={"reference"})
+ * 
  */
 class Planning
 {

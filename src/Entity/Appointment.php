@@ -18,7 +18,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     itemOperations={
  *          "get": {
  *              "normalization_context"={"groups"={"appointment_read"}}
- *          }
+ *          },
+ *          "put"
  *      }
  * )
  */
@@ -28,6 +29,7 @@ class Appointment
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"plannings_read"})
      */
     private $id;
 
@@ -85,13 +87,13 @@ class Appointment
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"planning_read", "plannings_read"})
+     * @Groups({"appointment_read", "planning_read", "plannings_read"})
      */
     private $duration;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"planning_read", "plannings_read"})
+     * @Groups({"appointment_read", "planning_read", "plannings_read"})
      */
     private $door;
 
@@ -252,7 +254,9 @@ class Appointment
 
         return $this;
     }
-
+    /**
+     * @Groups({"plannings_read"}) 
+     */
     public function isActive(): ?bool 
     {
         return $this->getStatus() === 0 //voir config

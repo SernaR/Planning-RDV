@@ -4,11 +4,10 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
 import PageWrap from '../components/ui/PageWrap';
-import SimpleModal from '../components/ui/SimpleModal'
+import Modal from '../components/ui/Modal'
 
-import { PLANNING_API } from '../services/config';
+import { PLANNING_API, APPOINTMENT_API, STATUS } from '../services/config';
 import Api from '../services/api'
-
 
 import moment from 'moment'
 import PlanningTable from '../components/PlanningTable';
@@ -62,6 +61,20 @@ const Planning = () => {
         })
     }
 
+    const handleCancel = async() => {
+        try {
+            await Api.update(APPOINTMENT_API, modal.appointment.id, { status: STATUS.CANCEL })
+            //const appointments = 
+            //rafraichir la vue
+            
+            setModal({ 
+                appointment: {},
+                open: false 
+            })  
+        } catch(err) {
+            setToast(true)
+        }
+    }
     return ( 
         <PageWrap
             //loading={loading}
@@ -105,13 +118,14 @@ const Planning = () => {
                         </Grid>
                     )}
                 </Grid>
-                <SimpleModal
+                <Modal
                     open={modal.open}
                     onClose={ () => setModal({ ...modal, open:false }) }
+                    onCancel={handleCancel}
                     title='Détail'
                 >
                     <Appointment content={modal.appointment}/>
-                </SimpleModal>
+                </Modal>
                 <Paper >
                     <div><pre>{JSON.stringify(plannings, null, 2)}</pre></div>
                 </Paper>

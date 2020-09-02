@@ -4,7 +4,6 @@ import { Button, Paper, Grid, IconButton, Typography, makeStyles, ButtonGroup } 
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import { AGENDA_START, AGENDA_END } from '../services/config'
-import SimpleModal from '../components/ui/SimpleModal'
 
 const setForbiddenPositions = (appointments) => {
     const lastQuarter = moment(moment().startOf('day').toDate()).add((AGENDA_END * 15), 'm').format('HH:mm')

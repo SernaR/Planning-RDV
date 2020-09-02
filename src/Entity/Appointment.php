@@ -14,7 +14,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=AppointmentRepository::class)
  * @ApiResource(
- *     collectionOperations={"get", "post"},
+ *     collectionOperations={
+ *          "get", 
+ *          "post": {
+ *              "controller"=App\Controller\api\CreateAppointmentController::class,
+ *          }
+ *     },
  *     itemOperations={
  *          "get": {
  *              "normalization_context"={"groups"={"appointment_read"}}

@@ -18,7 +18,9 @@ class CreateAppointmentController
     {
         //vérifier si la position est toujours libre ???
         
-        //augmenter le compteur du planning
+        $id = $data->getPlanning()->getId();
+        $planning = $this->repo->find($id);
+        $planning->setCount($planning->getCount() + 1);
 
         return $data;
     }

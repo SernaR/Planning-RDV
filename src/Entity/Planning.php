@@ -51,11 +51,10 @@ class Planning
     private $appointments = [];
 
     /**
-     * number of appointments in planning
+     * @ORM\Column(type="integer")
      * @Groups({"planning_read"})
-     * @var [integer]
      */
-    private $count;
+    private $count = 0;
 
     public function __construct($reference)
     {
@@ -113,6 +112,13 @@ class Planning
 
     public function getCount(): ?int
     {
-        return count($this->getAppointments());
+        return $this->count;
+    }
+
+    public function setCount(int $count): self
+    {
+        $this->count = $count;
+
+        return $this;
     }
 }

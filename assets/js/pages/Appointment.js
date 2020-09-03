@@ -16,7 +16,7 @@ import Filter from '../components/booking/Filter';
 
 
 const STEP_1 = 1
-//const STEP_2 = 2
+const STEP_2 = 2
 
 const useStyles = makeStyles(theme => ({
     footer: {
@@ -25,8 +25,10 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const Appointment = ({history}) => {
+const Appointment = ({ history, match }) => {
     const classes = useStyles()
+
+    const { id } = match.params;
     const [toast, setToast] = useState(false) 
     const itemsPerPage = 10;
 
@@ -45,8 +47,11 @@ const Appointment = ({history}) => {
     const [step, setStep] = useState(STEP_1)
     
     useEffect(() => {
+        if(id !== 'nouveau') {
+            fetchPostponed()
+        }
         fetchBooking()
-    },[])
+    },[id])
 
     const fetchBooking = async() => {
         try {
@@ -63,10 +68,26 @@ const Appointment = ({history}) => {
         }
     } // faire swr
 
+    const fetchPostponed = async() => {///////////////////////////////////////////////////////////////////////////
+        try{
+            const postponed = await Api.find(APPOINTMENT_API, id)
+           
+            toggleAllBookings(postponed.orders)
+            handleChangeDate('schedule', moment(postponed.schedule), true, postponed.door)
+            setStep(STEP_2)
+            setAppointment(appointment => ({ 
+                ...appointment, 
+                number: postponed.number,
+                askedDate: postponed.askedDate
+            }))
+        }catch(err) {
+            setToast(true)
+        }
+    }
+    
     const isSupplierDataFilled = () => { 
         return selectedDate && orders.length > 0
     }
-
     const isSchecduleFilled = () => {
         return appointment.schedule
     }
@@ -128,12 +149,12 @@ const Appointment = ({history}) => {
     const handleSubmit = async(e) => {
         e.preventDefault()
         //faire les vérifications
-    
+        
         const newAppointment = { ...appointment, 
             planning: planning['@id'],
-            duration,
-            orders,
-            number: `${planning.number}-${planning.count + 1}`
+            duration, 
+            orders, 
+            number: appointment.number || `${planning.number}-${planning.count + 1}` 
         }
         
         try {
@@ -229,7 +250,7 @@ const Appointment = ({history}) => {
                 </Grid>
                 <Grid item xs>    
                     <Paper >
-                        <div><pre>{JSON.stringify(planning, null, 2)}</pre></div>
+                        <div><pre>{JSON.stringify(appointment, null, 2)}</pre></div>
                     </Paper>
                 </Grid>
             </Grid>   

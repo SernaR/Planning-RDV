@@ -1,4 +1,3 @@
-// const [selectedDate, planning, getPlanning]
 import { useState } from 'react';
 import { PLANNING_API } from '../services/config'
 import Api from '../services/api'
@@ -12,7 +11,9 @@ const planningReference = (date) => {
 const useFetchPlanning = () => {
     const [state, setState] = useState({
         selectedDate: null,
-        planning: {}
+        planning: {
+            appointments: []
+        }
     })
 
     const getPlanning = async (date) => { 

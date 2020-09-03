@@ -28,8 +28,8 @@ const App = () => {
                 <HashRouter>
                     <NavbarWithRouter />
                     <Switch>
-                        <Route path="/rendez-vous/nouveau" component={ Appointment } />
                         <Route path="/rendez-vous/confirmation/:id" component={ Summary } />
+                        <Route path="/rendez-vous/:id" component={ Appointment } />
                         <Route path="/planning" component={ Planning } />
                         <Route path="/" component={ Homepage } />
                     </Switch>  

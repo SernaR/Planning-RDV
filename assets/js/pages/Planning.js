@@ -21,7 +21,7 @@ const setRange = (date) => {
     }
 }
 
-const Planning = () => {
+const Planning = ({ history }) => {
     const [toast, setToast] = useState(false)
     const [modal, setModal] = useState({
         appointment: {},
@@ -77,6 +77,17 @@ const Planning = () => {
             setToast(true)
         }
     }
+
+    const handlePostpone = async() => {
+        try {
+            await Api.update(APPOINTMENT_API, modal.appointment.id, { status: STATUS.POSTPONE, planning: null })
+            history.push('/rendez-vous/'+ modal.appointment.id)
+
+        } catch(err) {
+            setToast(true)
+        }
+    }
+
     return ( 
         <PageWrap
             //loading={loading}
@@ -125,6 +136,7 @@ const Planning = () => {
                     open={modal.open}
                     onClose={ () => setModal({ ...modal, open:false }) }
                     onCancel={handleCancel}
+                    onPostpone={handlePostpone}
                     title='Détail'
                 >
                     <Appointment content={modal.appointment}/>

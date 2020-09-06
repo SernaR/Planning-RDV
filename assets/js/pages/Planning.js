@@ -137,7 +137,7 @@ const Planning = ({ history }) => {
                     onClose={ () => setModal({ ...modal, open:false }) }
                     onCancel={handleCancel}
                     onPostpone={handlePostpone}
-                    title='Détail'
+                    title={`Rendez-vous n° ${modal.appointment.number}`}
                 >
                     <Appointment content={modal.appointment}/>
                 </Modal>

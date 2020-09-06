@@ -68,17 +68,17 @@ const Appointment = ({ history, match }) => {
         }
     } // faire swr
 
-    const fetchPostponed = async() => {///////////////////////////////////////////////////////////////////////////
+    const fetchPostponed = async() => {////////////////////////// trop de rendu 
         try{
             const postponed = await Api.find(APPOINTMENT_API, id)
            
+            setStep(STEP_2)
             toggleAllBookings(postponed.orders)
             handleChangeDate('schedule', moment(postponed.schedule), true, postponed.door)
-            setStep(STEP_2)
             setAppointment(appointment => ({ 
                 ...appointment, 
                 number: postponed.number,
-                askedDate: postponed.askedDate
+                askedDate: moment(postponed.askedDate)
             }))
         }catch(err) {
             setToast(true)
@@ -143,6 +143,7 @@ const Appointment = ({ history, match }) => {
     }
 
     const previousDay = () => {
+        console.log(selectedDate, appointment.askedDate)
         if(selectedDate > appointment.askedDate) getPlanning(moment(selectedDate).subtract(1, 'days')) 
     }
 
@@ -159,6 +160,7 @@ const Appointment = ({ history, match }) => {
         
         try {
             const result = await Api.create(APPOINTMENT_API, newAppointment)
+            console.log(result)
             history.push('/rendez-vous/confirmation/' + result.id)
         }catch(err) {
             setToast(true)

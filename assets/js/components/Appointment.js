@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import { List, ListSubheader, ListItem, ListItemText, Typography } from '@material-ui/core'
 
 function fetchData(orders) {
   if(!orders) return { suppliers: [], quantity: 0}
@@ -29,26 +30,27 @@ export default function Appointment({ content = {} }) {
   
   const fetchOrders = suppliers.map( (supplier, index) => {
     const orders = content.orders.filter( order => order.supplier === supplier)
-    return <div key={index}>     
-      <h3>Fournisseur : { supplier } </h3>
-      <ul>
-        { orders.map( order => <li key={order.number}>EP {order.number} : {order.quantity} colis</li>) }
-      </ul>
-    </div>
+    return <List key={index} dense={true}>     
+      <Typography variant="h6">Fournisseur : { supplier } </Typography>
+        { orders.map( order => <ListItem key={order.number}>
+          <ListItemText >EP {order.number} : {order.quantity} colis</ListItemText>
+        </ListItem>) }
+      </List>
+    
   })
 
 
   return (
-    <div>
-        <h2>Rendez-vous n° {content.number}</h2>
-        <div> 
-          <h3>planifié le {moment(content.schedule).format(' DD-MM-YY à HH:mm')}</h3>
-          <ul>
-              <li>{quantity} colis, quai {content.door}</li>
-              <li>{duration} de déchargement</li>
-          </ul>
-        </div>
+      <List dense={true}>
+        <Typography variant="h6">planifié le {moment(content.schedule).format(' DD-MM-YY à HH:mm')}</Typography>
+        <ListItem >
+          <ListItemText>{quantity} colis sur le quai {content.door}</ListItemText>
+          </ListItem><ListItem>  
+          <ListItemText>{duration} de déchargement</ListItemText>
+        </ListItem>
         {fetchOrders}
-    </div>
-  );
+      </List> 
+  )
 }
+
+//<h2>c</h2>

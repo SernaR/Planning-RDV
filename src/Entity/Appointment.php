@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -20,13 +22,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "controller"=App\Controller\api\CreateAppointmentController::class,
  *          }
  *     },
- *     itemOperations={
- *          "get": {
- *              "normalization_context"={"groups"={"appointment_read"}}
- *          },
- *          "put"
- *      }
+ *     itemOperations={ "get", "put"},
+ *     normalizationContext={"groups"={"appointment_read"}}
  * )
+ * @ApiFilter(SearchFilter::class, properties={"number": "partial"})
  */
 class Appointment
 {
@@ -34,7 +33,7 @@ class Appointment
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"plannings_read"})
+     * @Groups({"plannings_read","appointment_read"})
      */
     private $id;
 
@@ -58,6 +57,7 @@ class Appointment
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"appointment_read"})
      */
     private $status = 0;
 

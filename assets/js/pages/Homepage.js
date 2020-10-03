@@ -1,11 +1,21 @@
 import React, { useRef, useState } from 'react';
 import PageWrap from '../components/ui/PageWrap';
-import { Container, TextField, Button, Paper } from '@material-ui/core';
+import { Container, TextField, Button, makeStyles } from '@material-ui/core';
 import Api from '../services/api';
 import { APPOINTMENT_API, STATUS } from '../services/config';
-import SimpleAccordion from '../components/ui/SimpleAccordion';
+import SimpleAccordion from '../components/dahboard/SimpleAccordion';
+
+const useStyles = makeStyles(theme => ({
+    form: {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(2),
+      
+    },
+}))
 
 const Homepage = ({history}) => {
+    const classes = useStyles();
+
     const [search, setSearch] = useState('')
     const [toast, setToast] = useState(false)
     const [appointments, setAppointments] = useState([])
@@ -48,10 +58,11 @@ const Homepage = ({history}) => {
             setToast(true)
         }
     }
+    
 
     return <PageWrap
     //loading={loading}
-    title="Homepage"
+    title="Bienvenue"
     message={message.current}
     open={toast}
     onClose={() => {
@@ -59,11 +70,10 @@ const Homepage = ({history}) => {
         setToast(false)}}
     >  
         <Container fixed>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className={classes.form}>
                 <TextField
                     label="Rendez-vous"
                     size='small'
-                    //name="booking"
                     onChange={handleChange}
                     variant="outlined"
                 />
@@ -73,9 +83,6 @@ const Homepage = ({history}) => {
                 appointments={appointments}
                 onCancel={handleCancel}
                 onPostpone={handlePostpone}/>
-            <Paper >
-                <div><pre>{JSON.stringify(appointments, null, 2)}</pre></div>
-            </Paper>
         </Container> 
     </PageWrap> 
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment'
 
 import PageWrap from '../components/ui/PageWrap';
@@ -7,12 +7,14 @@ import Paginate from '../components/ui/Paginate';
 
 import Api from '../services/api'
 import { BOOKING_API, APPOINTMENT_API, DELIVERY_WINDOW } from '../services/config'
-import { Container, Grid, Paper, Button, makeStyles, Chip } from '@material-ui/core';
+import { Container, Grid, Paper, Button, makeStyles } from '@material-ui/core';
 import RotateLeftTwoToneIcon from '@material-ui/icons/RotateLeftTwoTone';
-import Agenda from '../components/Agenda';
+import Agenda from '../components/agenda/Agenda';
 import useFetchPlanning from '../hooks/useFetchPlanning';
 import useToggleBooking from '../hooks/useToggleBooking';
 import Filter from '../components/booking/Filter';
+import LoadingPage from '../components/ui/LoadingPage';
+import Header from '../components/agenda/Header';
 
 
 const STEP_1 = 1
@@ -30,11 +32,13 @@ const Appointment = ({ history, match }) => {
 
     const { id } = match.params;
     const [toast, setToast] = useState(false) 
+    const message = useRef('')
     const itemsPerPage = 10;
 
     const [selectedDate, planning, getPlanning] = useFetchPlanning()
     const [totalQuantity, duration, orders, toggleBooking, toggleAllBookings, removeAllBookings] = useToggleBooking()
     
+    const [loading, setLoading] = useState(true)
     const [bookings, setBookings] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
     const [appointment, setAppointment] = useState({})
@@ -49,8 +53,9 @@ const Appointment = ({ history, match }) => {
     useEffect(() => {
         if(id !== 'nouveau') {
             fetchPostponed()
+        } else {
+            fetchBooking()
         }
-        fetchBooking()
     },[id])
 
     const fetchBooking = async() => {
@@ -63,12 +68,13 @@ const Appointment = ({ history, match }) => {
             ) 
             const bookings = rangeBookings.filter( booking => booking.isFree === true)
             setBookings(bookings)    
+            setLoading(false)
         }catch(err) {
             setToast(true)
         }
-    } // faire swr
+    } 
 
-    const fetchPostponed = async() => {////////////////////////// trop de rendu 
+    const fetchPostponed = async() => { 
         try{
             const postponed = await Api.find(APPOINTMENT_API, id)
            
@@ -80,6 +86,7 @@ const Appointment = ({ history, match }) => {
                 number: postponed.number,
                 askedDate: moment(postponed.askedDate)
             }))
+            fetchBooking()
         }catch(err) {
             setToast(true)
         }
@@ -89,8 +96,9 @@ const Appointment = ({ history, match }) => {
         return selectedDate && orders.length > 0
     }
     const isSchecduleFilled = () => {
-        return appointment.schedule
+        return appointment.schedule !== undefined
     }
+
     const stepBack = () => {
         delete appointment.schedule
         setStep(step => step - 1)   
@@ -126,7 +134,6 @@ const Appointment = ({ history, match }) => {
         setCurrentPage(1);
     }
 
-
     const handleChangeWarehouse = ({target}) => {
         removeAllBookings()
         setCurrentPage(1);
@@ -138,12 +145,16 @@ const Appointment = ({ history, match }) => {
         setCurrentPage(1);
     }
 
+    const handleAgendaAlert = text => {
+        message.current = text
+        setToast(true)
+    }
+
     const nextDay = () => {
         if(selectedDate <= DELIVERY_WINDOW.max) getPlanning(moment(selectedDate).add(1, 'days'))
     }
 
     const previousDay = () => {
-        console.log(selectedDate, appointment.askedDate)
         if(selectedDate > appointment.askedDate) getPlanning(moment(selectedDate).subtract(1, 'days')) 
     }
 
@@ -160,44 +171,45 @@ const Appointment = ({ history, match }) => {
         
         try {
             const result = await Api.create(APPOINTMENT_API, newAppointment)
-            console.log(result)
             history.push('/rendez-vous/confirmation/' + result.id)
         }catch(err) {
             setToast(true)
         }
     }
+
+    if (loading) return <LoadingPage/>
     
     return (
         <PageWrap
             //loading={loading}
             title="Nouveau RDV"
-            message=''//{message.current}
+            message={message.current}
             open={toast}
             onClose={() => {
-                //message.current = ''
+                message.current = ''
                 setToast(false)}}
         >  
             <Container>
                 <form onSubmit={handleSubmit}>
-                    <Filter
-                        filters={filters} 
-                        askedDate={appointment.askedDate} 
-                        onChangeSupplier={handleChangeSupplier}
-                        onChangeBooking={handleChangeBooking}
-                        onChangeWarehouse={handleChangeWarehouse}
-                        onChangeDate={handleChangeDate}
-                    >
-                        <Chip label={totalQuantity +' colis'} color="primary"/>
-                        <Chip label={orders.length +' EP'} color="primary"/>
-                        { isSupplierDataFilled() && <>
-                        {step == STEP_1 && 
-                            <Button color='primary' onClick={ () => setStep(step => step + 1) }>Suivant</Button>
-                        || <>
-                            <Button color='secondary' onClick={stepBack}>Précedent</Button>
-                            { isSchecduleFilled() && <Button type="submit">Envoyer</Button>}
-                        </>}    
-                    </>}  
-                    </Filter>
+                    {step === STEP_1 && 
+                        <Filter
+                            filters={filters} 
+                            askedDate={appointment.askedDate} 
+                            onChangeSupplier={handleChangeSupplier}
+                            onChangeBooking={handleChangeBooking}
+                            onChangeWarehouse={handleChangeWarehouse}
+                            onChangeDate={handleChangeDate}
+                            onNext={ () => setStep(step => step + 1) }
+                            isNext={isSupplierDataFilled()}>
+                        </Filter> 
+                    || 
+                        <Header 
+                            stepBack={stepBack}
+                            totalQuantity={totalQuantity}
+                            date={appointment.schedule}
+                            isSchecduleFilled={isSchecduleFilled()}
+                        />
+                    }
 
                     {step === STEP_1 && <>
                         <BookingTable 
@@ -207,7 +219,7 @@ const Appointment = ({ history, match }) => {
                             onClick={toggleBooking}/>
                         <Grid container className={classes.footer}>
                             <Button size="small" onClick={removeAllBookings}><RotateLeftTwoToneIcon/> Réinitialiser</Button>    
-                            {itemsPerPage < filteredBookings.length &&<Paginate 
+                            {itemsPerPage < filteredBookings.length && <Paginate 
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 length={filteredBookings.length}
@@ -215,50 +227,42 @@ const Appointment = ({ history, match }) => {
                             />}
                         </Grid></>    
                     ||    
-                        <><Agenda  
+                        <Agenda  
                             schedule={scheduleCheck(filters.warehouse)}
                             duration={duration}
                             door={filters.warehouse}
                             appointments={appointmentsPerDoor(filters.warehouse)}
                             date={ selectedDate } 
                             onClick={handleChangeDate}
+                            onAlert={handleAgendaAlert}
                             onPrevious={previousDay}
                             onNext={nextDay}/>
-                        { filters.warehouse === 'PA' && 
-                            <Agenda  
-                                schedule={scheduleCheck("PA2")}
-                                duration={duration}
-                                door="PA2"
-                                appointments={appointmentsPerDoor("PA2")}
-                                date={ selectedDate } 
-                                onClick={handleChangeDate}
-                                onPrevious={previousDay}
-                                onNext={nextDay}/>
-                        }</>     
                     }
-                    
                 </form>    
             </Container>
-            <Grid container spacing={3}>
-                <Grid item xs>
-                    <Paper >
-                        <div><pre>{JSON.stringify(bookings, null, 2)}</pre></div>
-                    </Paper>
-                </Grid>    
-                <Grid item xs>    
-                    <Paper >
-                        <div><pre>{JSON.stringify(orders, null, 2)}</pre></div>
-                    </Paper>
-                </Grid>
-                <Grid item xs>    
-                    <Paper >
-                        <div><pre>{JSON.stringify(appointment, null, 2)}</pre></div>
-                    </Paper>
-                </Grid>
-            </Grid>   
+            
         </PageWrap>
     )     
      
 }
  
 export default Appointment;
+
+/*  **2ème porte PA**
+<Grid container spacing={3}>
+    <Grid item xs>
+        <Paper >
+            <div><pre>{JSON.stringify(bookings, null, 2)}</pre></div>
+        </Paper>
+    </Grid>    
+    <Grid item xs>    
+        <Paper >
+            <div><pre>{JSON.stringify(orders, null, 2)}</pre></div>
+        </Paper>
+    </Grid>
+    <Grid item xs>    
+        <Paper >
+            <div><pre>{JSON.stringify(appointment, null, 2)}</pre></div>
+        </Paper>
+    </Grid>
+</Grid>   */

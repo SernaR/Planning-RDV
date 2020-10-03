@@ -16,7 +16,7 @@ moment.locale("fr")
 import Navbar from './components/ui/Navbar';
 import Homepage from './pages/Homepage';
 import Appointment from './pages/Appointment';
-import Summary from './pages/Summary';
+import Confirmation from './pages/Confirmation';
 import Planning from './pages/Planning';
 
 const App = () => {
@@ -28,7 +28,7 @@ const App = () => {
                 <HashRouter>
                     <NavbarWithRouter />
                     <Switch>
-                        <Route path="/rendez-vous/confirmation/:id" component={ Summary } />
+                        <Route path="/rendez-vous/confirmation/:id" component={ Confirmation } />
                         <Route path="/rendez-vous/:id" component={ Appointment } />
                         <Route path="/planning" component={ Planning } />
                         <Route path="/" component={ Homepage } />
@@ -38,7 +38,6 @@ const App = () => {
         </ThemeProvider>
     )
 }
-
 
 const rootElement = document.querySelector('#app')
 if(rootElement) {

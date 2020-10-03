@@ -31,9 +31,19 @@ export const STATUS = {
     CANCEL: 3
 }
 
+//décodage du statut
+export const STATUT = {
+    0 : 'Planifié',
+    1: 'Livré',
+    2: 'Décalé',
+    3: 'Annulé'
+}
+
 //fenetre de récepetion
 export const DELIVERY_WINDOW = {
     min: moment().add(1, 'd'),
     max: moment().add(15, 'd'),
     incotermDateMax: moment().add(30, 'd')
 }
+
+export const WEEK = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]

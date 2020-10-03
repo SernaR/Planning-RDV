@@ -9,7 +9,6 @@ import { AGENDA_START, AGENDA_END } from '../services/config';
 function fetchDoorsAppointments(appointments) {
     const doors = {
         PA: {},
-        PA2: {},
         AE: {},
         PE: {}
     }
@@ -23,8 +22,10 @@ function fetchDoorsAppointments(appointments) {
 }  
 
 const PlanningTable = ({ appointments = [], onModal, planningIndex, isOtherType }) => { 
+   
     const rows = []
     const { doors } = fetchDoorsAppointments(appointments)
+   
     const now = moment(moment().startOf('day').toDate())
 
     const handleClick = (number) => {
@@ -39,7 +40,6 @@ const PlanningTable = ({ appointments = [], onModal, planningIndex, isOtherType 
         
         rows.push({
             PA: doors.PA[time],
-            PA2: doors.PA2[time],
             AE: doors.AE[time],
             PE: doors.PE[time]   
         })
@@ -56,8 +56,9 @@ const PlanningTable = ({ appointments = [], onModal, planningIndex, isOtherType 
                                 <TableCell align="center">PE</TableCell>
                             </> ||
                             <>
-                                <TableCell align="center">PA</TableCell>
-                                <TableCell align="center">PA2</TableCell>
+                                <TableCell align="center">PA </TableCell>
+                                <TableCell align="center">AE</TableCell>
+                                <TableCell align="center">PE</TableCell>
                         </> } 
                     </TableRow>
                 </TableHead>
@@ -68,10 +69,12 @@ const PlanningTable = ({ appointments = [], onModal, planningIndex, isOtherType 
                                 <>
                                     <TableCell align="center">{row.AE}</TableCell>
                                     <TableCell align="center">{row.PE}</TableCell>
+                                    <TableCell align="center"><Button onClick={ () => handleClick(row.PA)}>{row.PA}</Button></TableCell>
                                 </> ||
                                 <>
-                                    <TableCell align="center"><Button onClick={ () => handleClick(row.PA)}>{row.PA}</Button></TableCell>
-                                    <TableCell align="center">{row.PA2}</TableCell>
+                                    <TableCell align="center">{row.PA}</TableCell>
+                                    <TableCell align="center">{row.AE}</TableCell>
+                                    <TableCell align="center">{row.PE}</TableCell>
                             </> }
                         </TableRow>
                     ))}

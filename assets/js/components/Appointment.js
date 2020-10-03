@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import { List, ListSubheader, ListItem, ListItemText, Typography } from '@material-ui/core'
+import { List, ListItem, ListItemText, Typography } from '@material-ui/core'
 
 function fetchData(orders) {
   if(!orders) return { suppliers: [], quantity: 0}
@@ -53,4 +53,3 @@ export default function Appointment({ content = {} }) {
   )
 }
 
-//<h2>c</h2>

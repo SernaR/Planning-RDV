@@ -27,9 +27,7 @@ const BookingTable = ({items, selected, onClick, onSelectAll}) => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>
-                                    <Button 
-                                        onClick={onSelectAll}
-                                    >test</Button>
+                                    <Button onClick={onSelectAll}>tous</Button>
 
                                 </TableCell>
                                 <TableCell>Date</TableCell>

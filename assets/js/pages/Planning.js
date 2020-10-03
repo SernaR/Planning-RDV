@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Paper, Grid, IconButton, Typography, FormGroup, FormControlLabel, Switch } from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import { Container, Paper, Grid, makeStyles } from '@material-ui/core';
 
 import PageWrap from '../components/ui/PageWrap';
 import Modal from '../components/ui/Modal'
+import DateSwitchingHeader from '../components/ui/DateSwitchingHeader'
 
-import { PLANNING_API, APPOINTMENT_API, STATUS } from '../services/config';
+import { PLANNING_API, APPOINTMENT_API, STATUS, WEEK } from '../services/config';
 import Api from '../services/api'
 
 import moment from 'moment'
-import PlanningTable from '../components/PlanningTable';
+import PlanningTable from '../components/planning/PlanningTable';
+import Aside from '../components/planning/Aside'
 import Appointment from '../components/Appointment';
 moment.locale("fr")
 
@@ -21,7 +21,14 @@ const setRange = (date) => {
     }
 }
 
+const useStyles = makeStyles(theme => ({
+    agendas: {
+        marginTop: theme.spacing(1),
+    },
+}))
+
 const Planning = ({ history }) => {
+    const classes= useStyles()
     const [toast, setToast] = useState(false)
     const [modal, setModal] = useState({
         appointment: {},
@@ -30,8 +37,8 @@ const Planning = ({ history }) => {
 
     const [plannings, setPlannings] = useState([])
     const [dateInit, setDateInit] = useState(moment().weekday(0) )
-    const {monday, saturday } = setRange(dateInit)
-    const [isOtherType, setOtherType] = useState(false)
+    const { monday, saturday } = setRange(dateInit)
+    const [type, setType] = useState("PA")
 
     useEffect(() => {
         fetchData()
@@ -88,6 +95,10 @@ const Planning = ({ history }) => {
         }
     }
 
+    const handleChangeType = ({target}) => {
+        setType(target.value)
+    }
+
     return ( 
         <PageWrap
             //loading={loading}
@@ -100,32 +111,22 @@ const Planning = ({ history }) => {
         >  
             <Container>
                 <Paper>
-                    <Grid container item xs={12}>
-                        <IconButton
-                            aria-label="before"
-                            onClick={previous}>
-                            <NavigateBeforeIcon />
-                        </IconButton>
-                        <Typography>{monday}</Typography>
-                        <IconButton 
-                            aria-label="after"
-                            onClick={next}>
-                            <NavigateNextIcon />
-                        </IconButton> 
-                    </Grid>
-                    <FormGroup>
-                        <FormControlLabel
-                            control={<Switch size="small" checked={isOtherType} onChange={() => setOtherType(!isOtherType)} />}
-                            label="Autres Types"
-                        />
-                    </FormGroup>
+                    <DateSwitchingHeader 
+                        date={dateInit}
+                        onPrevious={ previous }
+                        onNext={ next } />
                 </Paper>
-
-                <Grid container spacing={1}>
+                <Grid container spacing={1} className={classes.agendas}>
+                    <Grid item xs={4} sm={2}>
+                        <Aside 
+                            type={type}
+                            onChangeType={ handleChangeType }/>
+                    </Grid> 
                     { plannings.map( (planning, index) =>
                         <Grid item xs={4} sm={2} key={index}> 
                             <PlanningTable 
-                                isOtherType={isOtherType}
+                                day={WEEK[index]}
+                                type={type}
                                 planningIndex={index}
                                 onModal={handleModal}
                                 appointments={planning.appointments}/> 
@@ -141,9 +142,6 @@ const Planning = ({ history }) => {
                 >
                     <Appointment content={modal.appointment}/>
                 </Modal>
-                <Paper >
-                    <div><pre>{JSON.stringify(plannings, null, 2)}</pre></div>
-                </Paper>
             </Container>
         </PageWrap>     
      );

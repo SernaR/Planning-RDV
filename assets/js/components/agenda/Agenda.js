@@ -1,9 +1,10 @@
 import React from 'react';
 import moment from 'moment'
-import { Button, Paper, Grid, IconButton, Typography, makeStyles, ButtonGroup } from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
-import { AGENDA_START, AGENDA_END } from '../services/config'
+import { Button, Paper, Grid, makeStyles } from '@material-ui/core';
+
+
+import DateSwitchingHeader from '../ui/DateSwitchingHeader'
+import { AGENDA_START, AGENDA_END } from '../../services/config'
 
 const setForbiddenPositions = (appointments) => {
     const lastQuarter = moment(moment().startOf('day').toDate()).add((AGENDA_END * 15), 'm').format('HH:mm')
@@ -48,26 +49,28 @@ const useStyles = makeStyles(theme => ({
         fontWeight: 'bold',
         textTransform: 'uppercase'
     },
-    quarters: {
-        alignItems: 'center',
-    }
+    quarter_container: {
+        paddingLeft: theme.spacing(3),
+        paddingBottom: theme.spacing(2),
+    },
+
 }))
 
-const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, door, schedule, duration }) => { 
+const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, onAlert, door, schedule, duration }) => { 
     const classes = useStyles();
 
     const agenda = []
     const {forbiddenPositions, appointmentNumbers} = setForbiddenPositions(appointments)
     const selection = setSelection (schedule, duration) 
     
-    const handleClick = ({date, isForbidden, text}) => { 
+    const handleClick = ({ date, isForbidden }) => { 
         if(isForbidden){
-            //faire quelquechose
+            //do something
         }else {
             if(isPlaceEnough(date, duration, forbiddenPositions)) {
                 onClick("schedule", date, false, door)
             }else {
-                alert('pas assez de temps disponible sur cette plage')
+                onAlert('pas assez de temps disponible sur cette plage')
             }
         }
     }
@@ -82,34 +85,28 @@ const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, door, sc
             const isSelected = selection.includes(time)
            
             agenda.push({
-                text: isForbidden ? appointmentNumbers[time] : isSelected ? "Positionné" : time,   
+                text: isForbidden ? appointmentNumbers[time] : time, //isSelected ? "Positionné" : time,   
                 isForbidden,
-                date
+                date,
+                color: isForbidden ? 'secondary' : 'primary', //isSelected ? 'primary' : 'default',
+                variant: isSelected ? 'contained' : 'text' //isForbidden ? 'text' :'outlined'
             })
         }
     }
 
     return ( <>
-
         <Paper className={classes.paper}>
-            <Grid container item xs={12} className={classes.cockpit}>
-                <IconButton 
-                    aria-label="before"
-                    onClick={onPrevious}>
-                    <NavigateBeforeIcon />
-                </IconButton>
-                <Typography className={classes.title}>{date && date.format('Do MMMM YYYY')}</Typography>
-                <IconButton 
-                    aria-label="after"
-                    onClick={onNext}>
-                    <NavigateNextIcon />
-                </IconButton> 
-            </Grid>
-            <Grid container>
+            <DateSwitchingHeader 
+                date={date}
+                onPrevious={onPrevious}
+                onNext={onNext}/>
+            <Grid container className={classes.quarter_container}>
                 {agenda.map( (quarter, index) => (
-                    <Grid  item xs={1} key={index}>
+                    <Grid item xs={1} key={index} >
                         <Button
                             onClick={() => handleClick(quarter)}
+                            variant={quarter.variant}
+                            color={quarter.color}
                             >{ quarter.text }
                         </Button>
                     </Grid> 

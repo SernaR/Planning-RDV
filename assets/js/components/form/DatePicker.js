@@ -1,22 +1,12 @@
 import React from "react";
 import { DatePicker } from "@material-ui/pickers";
-import { makeStyles } from '@material-ui/core/styles';
 import { DELIVERY_WINDOW } from '../../services/config'
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-      width: '90%',
-      margin: theme.spacing(1),
-    },
-  }))
-
-function Picker({ label, minDate, maxDate, onChange, name, value=null, error }) {
-    const classes = useStyles();    
+function Picker({ label, onChange, name, value=null, error }) {
     
     return (
         <DatePicker
-            className={classes.root}
-            //variant="static"
+            size='small'
             label={label}
             inputVariant="outlined"
             value={value}

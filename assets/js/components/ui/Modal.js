@@ -29,11 +29,10 @@ export default function Modal({ title, children, open, onClose, onCancel, onPost
           </Grid>
         </DialogTitle>
         <DialogContent>
-          {children}
-          
+          {children} 
         </DialogContent>
         <DialogActions>
-          <Button onClick={onCancel} color="primary">
+          <Button onClick={onCancel} color="secondary">
             Annuler le RDV
           </Button>
           <Button onClick={onPostpone} color="primary" autoFocus>

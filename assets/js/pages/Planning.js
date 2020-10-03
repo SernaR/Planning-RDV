@@ -17,7 +17,7 @@ moment.locale("fr")
 const setRange = (date) => {
     return {
         monday: date.format('YYMMDD'),
-        saturday: date.clone().add(5, 'days').format('YYMMDD')
+        friday: date.clone().add(4, 'days').format('YYMMDD')
     }
 }
 
@@ -37,7 +37,7 @@ const Planning = ({ history }) => {
 
     const [plannings, setPlannings] = useState([])
     const [dateInit, setDateInit] = useState(moment().weekday(0) )
-    const { monday, saturday } = setRange(dateInit)
+    const { monday, friday } = setRange(dateInit)
     const [type, setType] = useState("PA")
 
     useEffect(() => {
@@ -46,7 +46,8 @@ const Planning = ({ history }) => {
 
     const fetchData = async () => {
         try {
-            const plannings = await Api.findAll(`${PLANNING_API}?reference[gte]=${monday}&reference[lte]=${saturday}`)
+            const plannings = await Api.findAll(`${PLANNING_API}?reference[gte]=${monday}&reference[lte]=${friday}&order[reference]=asc`)
+            console.log('plannings:', plannings)
             setPlannings(plannings)
         } catch(err) {
             setToast(true)

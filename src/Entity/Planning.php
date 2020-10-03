@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -27,7 +28,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     itemOperations={"get"} 
  * )
  * @ApiFilter(RangeFilter::class, properties={"reference"})
- * 
+ * @ApiFilter(OrderFilter::class, properties={"reference": "ASC"})
  */
 class Planning
 {

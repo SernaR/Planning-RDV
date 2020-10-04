@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Paper, TableHead, TableContainer, TableRow, TableCell, Table, TableBody, makeStyles } from '@material-ui/core';
 import moment from 'moment'
 import { AGENDA_START, AGENDA_END } from '../../services/config';
 
-function fetchDoorsAppointments(appointments) { //USECALBACK
+function fetchDoorsAppointments(appointments) { 
     const doors = {
         PA: {},
         AE: {},
@@ -15,7 +15,7 @@ function fetchDoorsAppointments(appointments) { //USECALBACK
         doors[door][moment(schedule).format('HH:mm')].number = number   
         doors[door][moment(schedule).format('HH:mm')].duration = duration 
     })
-    console.log('calcul')
+    
     return {doors}
 } 
 
@@ -61,13 +61,18 @@ const useStyles = makeStyles( theme => ({
         height: 33
     },
     cell: {
-        backgroundColor: theme.palette.secondary.main
+        backgroundColor: theme.palette.secondary.main,
+        color: '#fff',
+        cursor: 'pointer',
+        '&:hover': { 
+            backgroundColor: theme.palette.secondary.dark, 
+        },
     }
 }))
 
-const PlanningTable = ({ appointments = [], onModal, planningIndex, type, day }) => { //useMEMO
+const PlanningTable = React.memo(({ appointments = [], onModal, planningIndex, type, day }) => {
     const classes = useStyles()
-    const { doors } = fetchDoorsAppointments(appointments)
+    const { doors } = useMemo(() => fetchDoorsAppointments(appointments), [appointments])
     const rows = fetchRows(doors, type)
 
     const handleClick = (number) => {
@@ -76,7 +81,7 @@ const PlanningTable = ({ appointments = [], onModal, planningIndex, type, day })
             onModal(appointment, planningIndex)
         }
     }
-    
+   
     return ( 
         <TableContainer component={Paper}>
             <Table>
@@ -95,7 +100,6 @@ const PlanningTable = ({ appointments = [], onModal, planningIndex, type, day })
                         <TableRow key={index} className={classes.row}>
                             { row.number && 
                                 <TableCell 
-                                    //style={{ backgroundColor: row.number ? '#d66437' : '', color: "#fff" }}
                                     className={ row.number ? classes.cell : ''}
                                     align="center" 
                                     size="small" 
@@ -110,7 +114,7 @@ const PlanningTable = ({ appointments = [], onModal, planningIndex, type, day })
             </Table>    
         </TableContainer>
     )
-}
+})
  
 export default PlanningTable;
 

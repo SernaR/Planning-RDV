@@ -24,7 +24,7 @@ export default function Navbar() {
         <div >
           <Button color="inherit"><NavLink to="/rendez-vous/nouveau" className={classes.menuButton}>Nouveau</NavLink></Button>
           <Button color="inherit"><NavLink to="/planning/consultation" className={classes.menuButton}>Planning</NavLink></Button>
-          <Button color="inherit"><NavLink to="/liste/consultation" className={classes.menuButton}>Liste</NavLink></Button>
+          <Button color="inherit"><NavLink to="/liste/consultation" className={classes.menuButton}>Recherche</NavLink></Button>
         </div>  
       </Toolbar>
     </AppBar>

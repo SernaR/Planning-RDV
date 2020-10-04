@@ -5,32 +5,42 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CloseIcon from '@material-ui/icons/Close';
-import { makeStyles, Grid } from '@material-ui/core';
+import { makeStyles, Grid, IconButton, Divider, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   title: {
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
 }))
 
 export default function Modal({ title, children, open, onClose, onCancel, onPostpone }) {
   const classes = useStyles();
   return (
-    <div>
       <Dialog
         open={open}
         onClose={onClose}
+        maxWidth={'sm'}
+        fullWidth
       >
         <DialogTitle>
           <Grid container item xs={12} className={classes.title}> 
-            <div>{title}</div>
-            <Button onClick={onClose}><CloseIcon /></Button>
+            <Typography variant="h6" component="h3">{title}</Typography>
+            <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
           </Grid>
         </DialogTitle>
         <DialogContent>
           {children} 
         </DialogContent>
+        <Divider />
         <DialogActions>
           <Button onClick={onCancel} color="secondary">
             Annuler le RDV
@@ -40,6 +50,5 @@ export default function Modal({ title, children, open, onClose, onCancel, onPost
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
   );
 }

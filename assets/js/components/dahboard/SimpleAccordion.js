@@ -37,7 +37,7 @@ export default function SimpleAccordion({ appointments, onCancel, onPostpone }) 
             <Typography className={classes.heading}>
               Rendez-vous n° {appointment.number} 
             </Typography>
-            <Typography className={classes.secondaryHeading}>
+            <Typography className={appointment.status !== 0 ? classes.secondaryHeading : ''}>
               statut: { STATUT[appointment.status] }
             </Typography>
           </AccordionSummary>

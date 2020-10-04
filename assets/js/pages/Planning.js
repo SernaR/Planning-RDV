@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Paper, Grid, makeStyles } from '@material-ui/core';
 
 import PageWrap from '../components/ui/PageWrap';
@@ -47,7 +47,6 @@ const Planning = ({ history }) => {
     const fetchData = async () => {
         try {
             const plannings = await Api.findAll(`${PLANNING_API}?reference[gte]=${monday}&reference[lte]=${friday}&order[reference]=asc`)
-            console.log('plannings:', plannings)
             setPlannings(plannings)
         } catch(err) {
             setToast(true)
@@ -62,13 +61,13 @@ const Planning = ({ history }) => {
         setDateInit(dateInit.clone().subtract(7, 'days'))
     }
 
-    const handleModal = (appointment, planningIndex) => {
+    const handleModal = useCallback((appointment, planningIndex) => {
         setModal({
             appointment,
             open: true,
             planningIndex
         })
-    }
+    },[])
 
     const handleCancel = async() => {
         try {

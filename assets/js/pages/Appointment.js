@@ -94,12 +94,9 @@ const Appointment = ({ history, match }) => {
         }
     }
     
-    const isSupplierDataFilled = () => { 
-        return selectedDate && orders.length > 0
-    }
-    const isSchecduleFilled = () => {
-        return appointment.schedule !== undefined
-    }
+    const isSupplierDataFilled = selectedDate && orders.length > 0  
+    const isSchecduleFilled = appointment.schedule !== undefined
+    const isPostponed = appointment.number !== undefined
 
     const stepBack = () => {
         delete appointment.schedule
@@ -197,20 +194,21 @@ const Appointment = ({ history, match }) => {
                     {step === STEP_1 && 
                         <Filter
                             filters={filters} 
+                            isPostponed={isPostponed}
                             askedDate={appointment.askedDate} 
                             onChangeSupplier={handleChangeSupplier}
                             onChangeBooking={handleChangeBooking}
                             onChangeWarehouse={handleChangeWarehouse}
                             onChangeDate={handleChangeDate}
                             onNext={ () => setStep(step => step + 1) }
-                            isNext={isSupplierDataFilled()}>
+                            isNext={isSupplierDataFilled}>
                         </Filter> 
                     || 
                         <Header 
                             stepBack={stepBack}
                             totalQuantity={totalQuantity}
                             date={appointment.schedule}
-                            isSchecduleFilled={isSchecduleFilled()}
+                            isSchecduleFilled={isSchecduleFilled}
                         />
                     }
 

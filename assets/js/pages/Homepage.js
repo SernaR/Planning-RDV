@@ -78,7 +78,6 @@ const Homepage = ({history}) => {
                     label="Rendez-vous"
                     size='small'
                     inputRef={inputEl}
-                    //onChange={handleChange}
                     variant="outlined"
                 />
                 <Button type='submit'>rechercher</Button>

@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Filter = ({ filters, onChangeWarehouse, onChangeSupplier, onChangeBooking, askedDate, onChangeDate, onNext, isNext }) => {
+const Filter = ({ filters, onChangeWarehouse, onChangeSupplier, onChangeBooking, askedDate, onChangeDate, onNext, isNext, isPostponed }) => {
     const classes = useStyles()    
     
     return ( 
@@ -28,7 +28,9 @@ const Filter = ({ filters, onChangeWarehouse, onChangeSupplier, onChangeBooking,
                         name="warehouse"
                         onChange={onChangeWarehouse}
                         >
-                        {WAREHOUSES.map ((warehouse, index) => <MenuItem key={index} value={warehouse}>{ warehouse }</MenuItem>)}  
+                        { isPostponed && 
+                            <MenuItem value={filters.warehouse}>{ filters.warehouse }</MenuItem>
+                        || WAREHOUSES.map ((warehouse, index) => <MenuItem key={index} value={warehouse}>{ warehouse }</MenuItem>)}  
                     </Select>
                 </Grid>
                 <Grid item>

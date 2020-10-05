@@ -7,7 +7,7 @@ import Paginate from '../components/ui/Paginate';
 
 import Api from '../services/api'
 import { BOOKING_API, APPOINTMENT_API, DELIVERY_WINDOW } from '../services/config'
-import { Container, Grid, Paper, Button, makeStyles } from '@material-ui/core';
+import { Container, Grid, Button, makeStyles } from '@material-ui/core';
 import RotateLeftTwoToneIcon from '@material-ui/icons/RotateLeftTwoTone';
 import Agenda from '../components/agenda/Agenda';
 import useFetchPlanning from '../hooks/useFetchPlanning';
@@ -15,7 +15,6 @@ import useToggleBooking from '../hooks/useToggleBooking';
 import Filter from '../components/booking/Filter';
 import LoadingPage from '../components/ui/LoadingPage';
 import Header from '../components/agenda/Header';
-
 
 const STEP_1 = 1
 const STEP_2 = 2
@@ -81,6 +80,7 @@ const Appointment = ({ history, match }) => {
             const postponed = await Api.find(APPOINTMENT_API, id)
            
             setStep(STEP_2)
+            setFilters({ ...filters,  warehouse: postponed.door })
             toggleAllBookings(postponed.orders)
             handleChangeDate('schedule', moment(postponed.schedule), true, postponed.door)
             setAppointment(appointment => ({ 
@@ -153,16 +153,18 @@ const Appointment = ({ history, match }) => {
     }
 
     const nextDay = () => {
-        if(selectedDate <= DELIVERY_WINDOW.max) getPlanning(moment(selectedDate).add(1, 'days'))
+        const increment =  selectedDate.day() === 5 ? 3 : 1
+        if(selectedDate <= DELIVERY_WINDOW.max) getPlanning(moment(selectedDate).add(increment, 'days'))
     }
+    console.log(selectedDate ? selectedDate.day() : 'null')
 
     const previousDay = () => {
-        if(selectedDate > appointment.askedDate) getPlanning(moment(selectedDate).subtract(1, 'days')) 
+        const increment = selectedDate.day() === 1 ? 3 : 1
+        if(selectedDate > appointment.askedDate) getPlanning(moment(selectedDate).subtract(increment, 'days')) 
     }
 
     const handleSubmit = async(e) => {
         e.preventDefault()
-        //faire les vérifications
         
         const newAppointment = { ...appointment, 
             planning: planning['@id'],

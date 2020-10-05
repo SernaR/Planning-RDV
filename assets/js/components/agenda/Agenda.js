@@ -97,7 +97,7 @@ const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, onAlert,
     return ( <>
         <Paper className={classes.paper}>
             <DateSwitchingHeader 
-                date={date}
+                date={ date.format('dddd Do MMMM YYYY')}
                 onPrevious={onPrevious}
                 onNext={onNext}/>
             <Grid container className={classes.quarter_container}>

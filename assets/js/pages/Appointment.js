@@ -156,7 +156,6 @@ const Appointment = ({ history, match }) => {
         const increment =  selectedDate.day() === 5 ? 3 : 1
         if(selectedDate <= DELIVERY_WINDOW.max) getPlanning(moment(selectedDate).add(increment, 'days'))
     }
-    console.log(selectedDate ? selectedDate.day() : 'null')
 
     const previousDay = () => {
         const increment = selectedDate.day() === 1 ? 3 : 1

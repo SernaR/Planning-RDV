@@ -133,7 +133,7 @@ const Planning = ({ history }) => {
             <Container>
                 <Paper>
                     <DateSwitchingHeader 
-                        date={dateInit}
+                        date={'Semaine ' + dateInit.format('w')}
                         onPrevious={ previous }
                         onNext={ next } />
                 </Paper>

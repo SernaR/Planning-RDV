@@ -26,7 +26,7 @@ const DateSwitchingHeader = ({date, onPrevious, onNext}) => {
                 onClick={onPrevious}>
                 <NavigateBeforeIcon />
             </IconButton>
-            <Typography className={classes.title}>{date && date.format('Do MMMM YYYY')}</Typography>
+            <Typography className={classes.title}>{ date }</Typography>
             <IconButton 
                 aria-label="after"
                 onClick={onNext}>

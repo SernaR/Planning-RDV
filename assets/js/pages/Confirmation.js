@@ -27,32 +27,35 @@ const useStyles = makeStyles(theme => ({
 const Confirmation = ({match}) => {
     const classes = useStyles();
 
+    const [loading, setLoading] = useState(false)
     const [appointment, setAppointment] = useState({})
     const [toast, setToast] = useState(false)
+
     useEffect(() => {
         fetchData()
     }, [])
 
     const fetchData = async () => {
+        setLoading(true)
         try {
             const appointment = await Api.find(APPOINTMENT_API, match.params.id)
             setAppointment(appointment)
         } catch(err) {
             setToast(true)
         }
+        setLoading(false)
     }
     
     return (
         <PageWrap
-            //loading={loading}
+            loading={loading}
             title="Confirmation"
-            message=''//{message.current}
+            message=''
             open={toast}
             onClose={() => {
-                //message.current = ''
                 setToast(false)}}
         >  
-            <Container>
+             {!loading && <Container>
                 <Paper className={classes.container}>
                     <Typography variant="h5" component="h2" gutterBottom>Rendez-vous n° {appointment.number}</Typography>
                     <Divider />
@@ -62,7 +65,7 @@ const Confirmation = ({match}) => {
                         <UpdateIcon />
                         <Link to='/rendez-vous/nouveau' className={classes.link}>Nouveau RDV</Link>
                     </Button>
-            </Container>
+            </Container>}
         </PageWrap>     
      );
 }

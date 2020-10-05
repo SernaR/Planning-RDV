@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Container, Paper, Grid, makeStyles } from '@material-ui/core';
+import { Container, Paper, Grid, makeStyles, Typography } from '@material-ui/core';
 
 import PageWrap from '../components/ui/PageWrap';
 import Modal from '../components/ui/Modal'
@@ -8,10 +8,12 @@ import DateSwitchingHeader from '../components/ui/DateSwitchingHeader'
 import { PLANNING_API, APPOINTMENT_API, STATUS, WEEK } from '../services/config';
 import Api from '../services/api'
 
-import moment from 'moment'
 import PlanningTable from '../components/planning/PlanningTable';
 import Aside from '../components/planning/Aside'
 import Appointment from '../components/Appointment';
+import LoadingPage from '../components/ui/LoadingPage';
+
+import moment from 'moment'
 moment.locale("fr")
 
 const setRange = (date) => {
@@ -25,6 +27,10 @@ const useStyles = makeStyles(theme => ({
     agendas: {
         marginTop: theme.spacing(1),
     },
+    empty: {
+        textAlign: 'center',
+        marginTop: 40
+    }
 }))
 
 const Planning = ({ history }) => {
@@ -35,8 +41,12 @@ const Planning = ({ history }) => {
         open: false
     });
 
+    const [loading, setLoading] = useState({
+        page: true,
+        date: false
+    })
     const [plannings, setPlannings] = useState([])
-    const [dateInit, setDateInit] = useState(moment().weekday(0) )
+    const [dateInit, setDateInit] = useState(moment().weekday(0))
     const { monday, friday } = setRange(dateInit)
     const [type, setType] = useState("PA")
 
@@ -45,12 +55,20 @@ const Planning = ({ history }) => {
     }, [dateInit])
 
     const fetchData = async () => {
+        setLoading({
+            ...loading,
+            date: true
+        })
         try {
             const plannings = await Api.findAll(`${PLANNING_API}?reference[gte]=${monday}&reference[lte]=${friday}&order[reference]=asc`)
             setPlannings(plannings)
         } catch(err) {
             setToast(true)
         }
+        setLoading({
+            page: false,
+            date: false
+        })
     }
 
     const next = () => {
@@ -99,14 +117,17 @@ const Planning = ({ history }) => {
         setType(target.value)
     }
 
+    const noPlannings = plannings.length === 0
+
+    if (loading.page) return <LoadingPage/>
+
     return ( 
         <PageWrap
-            //loading={loading}
+            loading={loading.date}
             title="Planning semaine "
-            message=''//{message.current}
+            message=''
             open={toast}
             onClose={() => {
-                //message.current = ''
                 setToast(false)}}
         >  
             <Container>
@@ -122,7 +143,11 @@ const Planning = ({ history }) => {
                             type={type}
                             onChangeType={ handleChangeType }/>
                     </Grid> 
-                    { plannings.map( (planning, index) =>
+                    { noPlannings &&
+                        <Grid xs={4} sm={8} className={classes.empty}>
+                        <Typography variant="h6">Aucun Planning sur cette semaine</Typography></Grid>   
+                    || 
+                    plannings.map( (planning, index) =>
                         <Grid item xs={4} sm={2} key={index}> 
                             <PlanningTable 
                                 day={WEEK[index]}

@@ -35,10 +35,11 @@ const Appointment = ({ history, match }) => {
     const message = useRef('')
     const itemsPerPage = 10;
 
-    const [selectedDate, planning, getPlanning] = useFetchPlanning()
+    const [selectedDate, planning, loadingDate, getPlanning] = useFetchPlanning()
     const [totalQuantity, duration, orders, toggleBooking, toggleAllBookings, removeAllBookings] = useToggleBooking()
     
-    const [loading, setLoading] = useState(true)
+    const [loadingPage, setLoadingPage] = useState(true)
+
     const [bookings, setBookings] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
     const [appointment, setAppointment] = useState({})
@@ -68,7 +69,8 @@ const Appointment = ({ history, match }) => {
             ) 
             const bookings = rangeBookings.filter( booking => booking.isFree === true)
             setBookings(bookings)    
-            setLoading(false)
+            setLoadingPage(false)
+
         }catch(err) {
             setToast(true)
         }
@@ -177,11 +179,11 @@ const Appointment = ({ history, match }) => {
         }
     }
 
-    if (loading) return <LoadingPage/>
+    if (loadingPage) return <LoadingPage/>
     
     return (
         <PageWrap
-            //loading={loading}
+            loading={loadingDate}
             title="Nouveau RDV"
             message={message.current}
             open={toast}
@@ -247,22 +249,3 @@ const Appointment = ({ history, match }) => {
 }
  
 export default Appointment;
-
-/*  **2ème porte PA**
-<Grid container spacing={3}>
-    <Grid item xs>
-        <Paper >
-            <div><pre>{JSON.stringify(bookings, null, 2)}</pre></div>
-        </Paper>
-    </Grid>    
-    <Grid item xs>    
-        <Paper >
-            <div><pre>{JSON.stringify(orders, null, 2)}</pre></div>
-        </Paper>
-    </Grid>
-    <Grid item xs>    
-        <Paper >
-            <div><pre>{JSON.stringify(appointment, null, 2)}</pre></div>
-        </Paper>
-    </Grid>
-</Grid>   */

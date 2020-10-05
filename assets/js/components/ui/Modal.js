@@ -31,7 +31,7 @@ export default function Modal({ title, children, open, onClose, onCancel, onPost
       >
         <DialogTitle>
           <Grid container item xs={12} className={classes.title}> 
-            <Typography variant="h6" component="h3">{title}</Typography>
+            <Typography variant="h5" component="h3">{title}</Typography>
             <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
               <CloseIcon />
             </IconButton>

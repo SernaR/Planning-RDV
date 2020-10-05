@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import PageWrap from '../components/ui/PageWrap';
-import { Container, TextField, Button, makeStyles } from '@material-ui/core';
+import { Container, TextField, Button, makeStyles, Typography, Input } from '@material-ui/core';
 import Api from '../services/api';
 import { APPOINTMENT_API, STATUS } from '../services/config';
 import SimpleAccordion from '../components/dahboard/SimpleAccordion';
@@ -16,15 +16,12 @@ const useStyles = makeStyles(theme => ({
 const Homepage = ({history}) => {
     const classes = useStyles();
 
-    const [search, setSearch] = useState('')
+    const [loading, setLoading] = useState(false)
     const [toast, setToast] = useState(false)
     const [appointments, setAppointments] = useState([])
 
     const message = useRef('')
-
-    const handleChange = ({target}) => {
-        setSearch(target.value)
-    }
+    const inputEl = useRef('')
 
     const handleCancel = async(id, index) => {
         try {
@@ -50,18 +47,24 @@ const Homepage = ({history}) => {
 
     const handleSubmit = async(e) => {
         e.preventDefault()
-       
+        
+        const search = inputEl.current.value
+        if(!search) return
+        
+        setLoading(true)
         try {
             const appointments = await Api.findAll(APPOINTMENT_API + '?number=' + search) 
             setAppointments(appointments)
         } catch(err) {
             setToast(true)
         }
+        setLoading(false)
     }
-    
 
+    const noResearchMatches = ( appointments.length === 0 && inputEl.current.value && !loading)
+    
     return <PageWrap
-    //loading={loading}
+    loading={loading}
     title="Bienvenue"
     message={message.current}
     open={toast}
@@ -74,15 +77,19 @@ const Homepage = ({history}) => {
                 <TextField
                     label="Rendez-vous"
                     size='small'
-                    onChange={handleChange}
+                    inputRef={inputEl}
+                    //onChange={handleChange}
                     variant="outlined"
                 />
                 <Button type='submit'>rechercher</Button>
             </form>
-            <SimpleAccordion 
-                appointments={appointments}
-                onCancel={handleCancel}
-                onPostpone={handlePostpone}/>
+            { noResearchMatches &&
+                <Typography variant="h6">Aucun rendez-vous ne correspond a la recherche</Typography>    
+                ||
+                <SimpleAccordion 
+                    appointments={appointments}
+                    onCancel={handleCancel}
+                    onPostpone={handlePostpone}/>}
         </Container> 
     </PageWrap> 
 }

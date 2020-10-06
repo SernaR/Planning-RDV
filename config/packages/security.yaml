@@ -25,7 +25,6 @@ security:
         api:
             pattern: ^/api
             stateless: true
-            anonymous: true #désécurise - pour visualiser le swagger ne pas oublier d'enlever !!!!!!!!!!!!!!!!!!!!!!!!
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator           
@@ -44,5 +43,5 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        # - { path: ^/api, roles: IS_AUTHENTICATED_FULLY } #désécurise - pour visualiser le swagger ne pas oublier de remettre !!!!!!!!!!!!!!!!!!!!!!!!
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY } 
         # - { path: ^/admin, roles: ROLE_ADMIN } 

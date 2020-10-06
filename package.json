@@ -1,7 +1,7 @@
 {
     "devDependencies": {
         "@babel/preset-react": "^7.0.0",
-        "@symfony/webpack-encore": "^0.30.0",
+        "@symfony/webpack-encore": "^0.31.0",
         "core-js": "^3.0.0",
         "regenerator-runtime": "^0.13.2",
         "webpack-notifier": "^1.6.0"
@@ -20,6 +20,7 @@
         "@material-ui/icons": "^4.9.1",
         "@material-ui/pickers": "^3.2.10",
         "axios": "^0.19.2",
+        "jwt-decode": "^3.0.0",
         "moment": "^2.27.0",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",

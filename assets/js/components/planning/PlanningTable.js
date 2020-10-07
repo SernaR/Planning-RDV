@@ -22,7 +22,7 @@ function fetchDoorsAppointments(appointments) {
 function fetchRows(doors, type){
     const now = moment(moment().startOf('day').toDate())
     const rows = []
-    let duration = 0 //a renomer
+    let duration = 0 
 
     for (let i = AGENDA_START; i < AGENDA_END; i++) { 
         const time = now.clone().add((i * 15), 'm').format('HH:mm')

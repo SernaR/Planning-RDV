@@ -1,11 +1,5 @@
 import axios from 'axios';
 
-const fetcher = url => fetch(url, {
-  headers: {
-      'Accept': 'application/ld+json',
-    }
-  }).then(r => r.json())
-
 function findAll(url) {
   return axios
       .get(url)

@@ -52,11 +52,14 @@ const useStyles = makeStyles(theme => ({
     quarter_container: {
         paddingLeft: theme.spacing(3),
         paddingBottom: theme.spacing(2),
+        height: 140
     },
-
+    quarter: {
+        marginBottom: theme.spacing(1)
+    }
 }))
 
-const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, onAlert, door, schedule, duration }) => { 
+const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, onAlert, door, schedule, duration, loading }) => { 
     const classes = useStyles();
 
     const agenda = []
@@ -85,11 +88,11 @@ const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, onAlert,
             const isSelected = selection.includes(time)
            
             agenda.push({
-                text: isForbidden ? appointmentNumbers[time] : time, //isSelected ? "Positionné" : time,   
+                text: isForbidden ? appointmentNumbers[time] : time, 
                 isForbidden,
                 date,
-                color: isForbidden ? 'secondary' : 'primary', //isSelected ? 'primary' : 'default',
-                variant: isSelected ? 'contained' : 'text' //isForbidden ? 'text' :'outlined'
+                color: isForbidden ? 'secondary' : 'primary', 
+                variant: isSelected ? 'contained' : 'text' 
             })
         }
     }
@@ -101,9 +104,10 @@ const Agenda = ({ date, appointments = [], onClick, onPrevious, onNext, onAlert,
                 onPrevious={onPrevious}
                 onNext={onNext}/>
             <Grid container className={classes.quarter_container}>
-                {agenda.map( (quarter, index) => (
+                { !loading && agenda.map( (quarter, index) => (
                     <Grid item xs={1} key={index} >
                         <Button
+                             className={classes.quarter}
                             onClick={() => handleClick(quarter)}
                             variant={quarter.variant}
                             color={quarter.color}

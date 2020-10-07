@@ -20,7 +20,7 @@ function getTimeFromMins(mins) {
   const and = h !== 0 & m !== 0 ? ' et ' : ''
   const minutes = m === 0 ? '' : `${and}${m} minutes` 
   
-  return hours + and + minutes
+  return hours + minutes
 }
 
 export default function Appointment({ content = {} }) {

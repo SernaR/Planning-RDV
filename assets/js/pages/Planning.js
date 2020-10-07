@@ -124,7 +124,7 @@ const Planning = ({ history }) => {
     return ( 
         <PageWrap
             loading={loading.date}
-            title="Planning semaine "
+            title={"Planning semaine "+ dateInit.format('w')}
             message=''
             open={toast}
             onClose={() => {
@@ -133,7 +133,7 @@ const Planning = ({ history }) => {
             <Container>
                 <Paper>
                     <DateSwitchingHeader 
-                        date={'Semaine ' + dateInit.format('w')}
+                        date={'Semaine du ' +  dateInit.format('DD/MM') + " au " + dateInit.clone().add(5, 'days').format('DD/MM/YYYY')}
                         onPrevious={ previous }
                         onNext={ next } />
                 </Paper>
@@ -144,7 +144,7 @@ const Planning = ({ history }) => {
                             onChangeType={ handleChangeType }/>
                     </Grid> 
                     { noPlannings &&
-                        <Grid xs={4} sm={8} className={classes.empty}>
+                        <Grid item xs={4} sm={8} className={classes.empty}>
                         <Typography variant="h6">Aucun Planning sur cette semaine</Typography></Grid>   
                     || 
                     plannings.map( (planning, index) =>

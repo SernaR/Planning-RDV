@@ -2,11 +2,9 @@ import React from "react";
 import { DatePicker } from "@material-ui/pickers";
 import { DELIVERY_WINDOW } from '../../services/config'
 
-
 function disableWeekends(date) {
     return date.day() === 0 || date.day() === 6;
 }
-
 
 function Picker({ label, onChange, name, value=null, error }) {
     

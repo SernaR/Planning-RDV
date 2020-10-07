@@ -26,8 +26,8 @@ const Login = ({ history }) => {
     const { setIsAuthenticated } = useContext(AuthContext);
     
     const [credentials, setCredentials] = useState({
-        username: "Sirius",
-        password: "mot2passe"
+        username: "",
+        password: ""
     })
 
     const [error, setError] = useState("");

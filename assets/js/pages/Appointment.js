@@ -6,7 +6,7 @@ import BookingTable from '../components/booking/Table'
 import Paginate from '../components/ui/Paginate';
 
 import Api from '../services/api'
-import { BOOKING_API, APPOINTMENT_API, DELIVERY_WINDOW } from '../services/config'
+import { BOOKING_API, APPOINTMENT_API, DELIVERY_WINDOW, ITEMS_PER_PAGE } from '../services/config'
 import { Container, Grid, Button, makeStyles } from '@material-ui/core';
 import RotateLeftTwoToneIcon from '@material-ui/icons/RotateLeftTwoTone';
 import Agenda from '../components/agenda/Agenda';
@@ -32,7 +32,7 @@ const Appointment = ({ history, match }) => {
     const { id } = match.params;
     const [toast, setToast] = useState(false) 
     const message = useRef('')
-    const itemsPerPage = 10;
+    const itemsPerPage = ITEMS_PER_PAGE;
 
     const [selectedDate, planning, loadingDate, getPlanning] = useFetchPlanning()
     const [totalQuantity, duration, orders, toggleBooking, toggleAllBookings, removeAllBookings] = useToggleBooking()
@@ -230,6 +230,7 @@ const Appointment = ({ history, match }) => {
                     ||    
                         <Agenda  
                             schedule={scheduleCheck(filters.warehouse)}
+                            loading={loadingDate}
                             duration={duration}
                             door={filters.warehouse}
                             appointments={appointmentsPerDoor(filters.warehouse)}
@@ -243,8 +244,7 @@ const Appointment = ({ history, match }) => {
             </Container>
             
         </PageWrap>
-    )     
-     
+    )         
 }
  
 export default Appointment;

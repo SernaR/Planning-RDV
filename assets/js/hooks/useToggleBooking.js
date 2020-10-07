@@ -23,10 +23,8 @@ const useToggleBooking = () => {
         })
     }
 
-    const toggleAllBookings = (bookings) => { //revoir la règle de gestion
-        //const orders = state.orders
-        const isNew = state.totalQuantity === 0 //orders.indexOf(bookings[0]['@id']) === -1
-
+    const toggleAllBookings = (bookings) => { 
+        const isNew = state.totalQuantity === 0 
         isNew ? addAllBookings(bookings) : removeAllBookings()
     }
 

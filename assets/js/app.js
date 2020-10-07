@@ -13,7 +13,7 @@ import MomentUtils from '@date-io/moment';
 import moment from "moment";
 moment.locale("fr")
 
-import Navbar from './components/ui/Navbar';
+import Navbar from './components/navigation/Navbar';
 import Homepage from './pages/Homepage';
 import Appointment from './pages/Appointment';
 import Confirmation from './pages/Confirmation';
@@ -21,7 +21,7 @@ import Planning from './pages/Planning';
 import Research from './pages/Research';
 import Login from './pages/Login';
 
-import PrivateRoute from './components/ui/PrivateRoute'
+import PrivateRoute from './components/navigation/PrivateRoute'
 import authAPI from './services/authAPI'
 import AuthContext from './contexts/AuthContext'
 

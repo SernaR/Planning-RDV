@@ -1,7 +1,7 @@
 import moment from 'moment'
 moment.locale("fr")
 
-export const API_URL = 'https://localhost:8000/api/'
+export const API_URL = process.env.API_URL
 
 export const LOGIN_API = API_URL + 'login_check'
 export const BOOKING_API = API_URL + 'orders'

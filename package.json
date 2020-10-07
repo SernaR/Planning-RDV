@@ -20,6 +20,7 @@
         "@material-ui/icons": "^4.9.1",
         "@material-ui/pickers": "^3.2.10",
         "axios": "^0.19.2",
+        "dotenv": "^8.2.0",
         "jwt-decode": "^3.0.0",
         "moment": "^2.27.0",
         "react": "^16.13.1",

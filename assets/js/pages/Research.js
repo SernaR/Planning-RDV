@@ -1,16 +1,24 @@
 import React, { useRef, useState } from 'react';
 import PageWrap from '../components/ui/PageWrap';
-import { Container, TextField, Button, makeStyles, Typography, Input } from '@material-ui/core';
+import { Container, TextField, Button, makeStyles, Typography } from '@material-ui/core';
 import Api from '../services/api';
 import { APPOINTMENT_API, STATUS } from '../services/config';
 import SimpleAccordion from '../components/dahboard/SimpleAccordion';
+
+import { CSVLink } from "react-csv";
+import csvIcon from '../../img/csv-file.svg'
 
 const useStyles = makeStyles(theme => ({
     form: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(2),
+        display: 'flex',
+        justifyContent: 'space-between'
       
     },
+    csvIcon: {
+        height: 30
+    }
 }))
 
 const Research = ({history}) => {
@@ -62,7 +70,27 @@ const Research = ({history}) => {
     }
 
     const noResearchMatches = ( appointments.length === 0 && inputEl.current.value && !loading)
-    
+
+    const csvData = () => {
+        const data = []
+        appointments.map( appointment => {
+            appointment.orders.map( order => {
+                data.push({
+                    "Date demandée": appointment.askedDate,
+                    "Entrepôt": appointment.door,
+                    "N° rdv": appointment.number,
+                    "date rdv": appointment.schedule,
+                    "statut": appointment.status,
+                    "Booking": order.booking,
+                    "EP": order.number,
+                    "Nbre colis": order.quantity,
+                    "fournisseur": order.supplier
+                })
+            })
+        })    
+        return data
+    }
+
     return <PageWrap
     loading={loading}
     title="Recherche"
@@ -74,13 +102,18 @@ const Research = ({history}) => {
     >  
         <Container fixed>
             <form onSubmit={handleSubmit} className={classes.form}>
-                <TextField
-                    label="Rendez-vous"
-                    size='small'
-                    inputRef={inputEl}
-                    variant="outlined"
-                />
-                <Button type='submit'>rechercher</Button>
+                <div>
+                    <TextField
+                        label="Rendez-vous"
+                        size='small'
+                        inputRef={inputEl}
+                        variant="outlined"
+                    />
+                    <Button type='submit'>rechercher</Button>
+                </div>   
+                <CSVLink data={csvData()}>
+                    <img src={csvIcon} className={classes.csvIcon}/>
+                </CSVLink>
             </form>
             { noResearchMatches &&
                 <Typography variant="h6">Aucun rendez-vous ne correspond a la recherche</Typography>    

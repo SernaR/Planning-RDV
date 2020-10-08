@@ -24,6 +24,7 @@
         "jwt-decode": "^3.0.0",
         "moment": "^2.27.0",
         "react": "^16.13.1",
+        "react-csv": "^2.0.3",
         "react-dom": "^16.13.1",
         "react-router-dom": "^5.2.0"
     }
